@@ -4,12 +4,6 @@
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#000000",
-    "icons": [
-      {
-        "src": "/offline-test2/static/images/newlogo.webp",
-        "sizes": "127x100",
-        "type": "image/webp"
-      }
-    ]
+    "theme_color": "#000000"
+    
   }
