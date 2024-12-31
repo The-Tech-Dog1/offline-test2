@@ -4,7 +4,7 @@ const CACHE_NAME = 'freedom-browser-cache-v1';
 const urlsToCache = [
     '/',
     '/index.html',
-    '/manifest.json',
+    'static/manifest.json',
     'static/styles/index.css',
     'static/scripts/jquery-3.7.1.min.js',
     'static/scripts/global.js',
