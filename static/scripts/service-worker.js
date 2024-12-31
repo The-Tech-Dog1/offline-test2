@@ -3,7 +3,7 @@ const CACHE_NAME = 'freedom-browser-cache-v1';
 // Add all your static files here
 const urlsToCache = [
     '/',
-    '/index.html',
+    'index.html',
     'static/manifest.json',
     'static/styles/index.css',
     'static/scripts/jquery-3.7.1.min.js',
