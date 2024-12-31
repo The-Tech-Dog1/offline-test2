@@ -1,7 +1,7 @@
-const CACHE_NAME = 'freedom-browser-cache-v4';
+const CACHE_NAME = 'freedom-browser-cache-v5';
 const PRE_CACHE = [
-  '/', // Ensures the root path is cached
-  '/index.html',
+  '/', // Root
+  '/index.html', // Main HTML file
   '/static/styles/index.css',
   '/static/scripts/jquery-3.7.1.min.js',
   '/static/scripts/global.js',
@@ -21,45 +21,52 @@ const PRE_CACHE = [
 ];
 
 self.addEventListener('install', event => {
-  console.log('Service Worker installing.');
+  console.log('[Service Worker] Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      console.log('Caching assets.');
+      console.log('[Service Worker] Pre-caching assets...');
       return cache.addAll(PRE_CACHE).catch(error => {
-        console.error('Error caching assets:', error);
+        console.error('[Service Worker] Error caching assets:', error);
       });
     })
   );
+  self.skipWaiting(); // Activate immediately after installation
 });
 
 self.addEventListener('activate', event => {
-  console.log('Service Worker activating.');
+  console.log('[Service Worker] Activating...');
   event.waitUntil(
     caches.keys().then(cacheNames =>
       Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log(`Deleting old cache: ${cacheName}`);
+            console.log(`[Service Worker] Deleting old cache: ${cacheName}`);
             return caches.delete(cacheName);
           }
         })
       )
     )
   );
+  self.clients.claim(); // Take control of all clients immediately
 });
 
 self.addEventListener('fetch', event => {
+  console.log(`[Service Worker] Fetching: ${event.request.url}`);
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {
       if (cachedResponse) {
-        console.log(`Serving cached: ${event.request.url}`);
+        console.log(`[Service Worker] Serving cached: ${event.request.url}`);
         return cachedResponse;
       }
 
-      console.log(`Fetching: ${event.request.url}`);
+      // If not in cache, fetch from network
       return fetch(event.request)
         .then(networkResponse => {
-          if (!networkResponse || !networkResponse.ok) {
+          if (
+            !networkResponse ||
+            !networkResponse.ok ||
+            event.request.method !== 'GET'
+          ) {
             return networkResponse;
           }
 
@@ -69,8 +76,9 @@ self.addEventListener('fetch', event => {
           });
         })
         .catch(error => {
-          console.error('Fetch failed, returning offline fallback:', error);
-          // Optionally serve a fallback for specific types of content
+          console.error('[Service Worker] Fetch failed, serving offline fallback...', error);
+
+          // Serve index.html for document requests when offline
           if (event.request.destination === 'document') {
             return caches.match('/index.html');
           }
