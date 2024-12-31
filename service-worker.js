@@ -1,10 +1,9 @@
 const CACHE_NAME = 'freedom-browser-cache-v1';
 
-// Add all your /offline-test2/static files here
 const urlsToCache = [
     '/',
     '/index.html',
-    '/offline-test2/static/manifest.json',
+    '/manifest.json',
     '/offline-test2/static/styles/index.css',
     '/offline-test2/static/scripts/jquery-3.7.1.min.js',
     '/offline-test2/static/scripts/global.js',
@@ -23,59 +22,61 @@ const urlsToCache = [
     '/offline-test2/static/images/joindiscord.min.svg'
 ];
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(function(cache) {
-                console.log('Cache opened');
-                return cache.addAll(urlsToCache);
-            })
-    );
-});
-
-self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        caches.match(event.request)
-            .then(function(response) {
-                // Cache hit - return response
-                if (response) {
-                    return response;
-                }
-
-                return fetch(event.request).then(
-                    function(response) {
-                        // Check if we received a valid response
-                        if(!response || response.status !== 200 || response.type !== 'basic') {
-                            return response;
-                        }
-
-                        // Clone the response
-                        var responseToCache = response.clone();
-
-                        caches.open(CACHE_NAME)
-                            .then(function(cache) {
-                                cache.put(event.request, responseToCache);
-                            });
-
-                        return response;
-                    }
+            .then(cache => {
+                return Promise.allSettled(
+                    urlsToCache.map(url => 
+                        cache.add(url).catch(err => {
+                            console.warn(`Failed to cache ${url}:`, err);
+                            return null;
+                        })
+                    )
                 );
             })
     );
 });
 
-self.addEventListener('activate', function(event) {
-    var cacheWhitelist = [CACHE_NAME];
+self.addEventListener('fetch', event => {
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                if (response) {
+                    return response;
+                }
+                return fetch(event.request)
+                    .then(response => {
+                        if (!response || response.status !== 200) {
+                            return response;
+                        }
+                        const responseToCache = response.clone();
+                        caches.open(CACHE_NAME)
+                            .then(cache => {
+                                cache.put(event.request, responseToCache);
+                            })
+                            .catch(console.error);
+                        return response;
+                    })
+                    .catch(error => {
+                        console.error('Fetch failed:', error);
+                        return new Response('Offline content not available');
+                    });
+            })
+    );
+});
 
+self.addEventListener('activate', event => {
     event.waitUntil(
-        caches.keys().then(function(cacheNames) {
-            return Promise.all(
-                cacheNames.map(function(cacheName) {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
+        caches.keys()
+            .then(cacheNames => {
+                return Promise.all(
+                    cacheNames.map(cacheName => {
+                        if (cacheName !== CACHE_NAME) {
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            })
     );
 });
