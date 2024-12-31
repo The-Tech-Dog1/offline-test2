@@ -1,7 +1,7 @@
 const CACHE_NAME = 'freedom-browser-cache-v5';
 const PRE_CACHE = [
-  '/', // Root
-  '/index.html', // Main HTML file
+  '/', // Ensures the root path is cached
+  '/index.html',
   '/static/styles/index.css',
   '/static/scripts/jquery-3.7.1.min.js',
   '/static/scripts/global.js',
@@ -21,68 +21,57 @@ const PRE_CACHE = [
 ];
 
 self.addEventListener('install', event => {
-  console.log('[Service Worker] Installing...');
+  console.log('Service Worker installing.');
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      console.log('[Service Worker] Pre-caching assets...');
+      console.log('Caching assets.');
       return cache.addAll(PRE_CACHE).catch(error => {
-        console.error('[Service Worker] Error caching assets:', error);
+        console.error('Error caching assets:', error);
       });
     })
   );
-  self.skipWaiting(); // Activate immediately after installation
 });
 
 self.addEventListener('activate', event => {
-  console.log('[Service Worker] Activating...');
+  console.log('Service Worker activating.');
   event.waitUntil(
     caches.keys().then(cacheNames =>
       Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log(`[Service Worker] Deleting old cache: ${cacheName}`);
+            console.log(`Deleting old cache: ${cacheName}`);
             return caches.delete(cacheName);
           }
         })
       )
     )
   );
-  self.clients.claim(); // Take control of all clients immediately
 });
 
 self.addEventListener('fetch', event => {
-  console.log(`[Service Worker] Fetching: ${event.request.url}`);
-  event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      if (cachedResponse) {
-        console.log(`[Service Worker] Serving cached: ${event.request.url}`);
-        return cachedResponse;
-      }
-
-      // If not in cache, fetch from network
-      return fetch(event.request)
-        .then(networkResponse => {
-          if (
-            !networkResponse ||
-            !networkResponse.ok ||
-            event.request.method !== 'GET'
-          ) {
-            return networkResponse;
-          }
-
+  if (event.request.mode === 'navigate') {
+    // Handle navigation requests (e.g., refreshing the page)
+    event.respondWith(
+      caches.match('/index.html').then(cachedResponse => {
+        return cachedResponse || fetch(event.request).catch(() => {
+          console.error('Failed to fetch navigation request, and no cache found.');
+        });
+      })
+    );
+  } else {
+    // Handle other requests
+    event.respondWith(
+      caches.match(event.request).then(cachedResponse => {
+        return cachedResponse || fetch(event.request).then(networkResponse => {
+          // Cache the new network response
           return caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, networkResponse.clone());
             return networkResponse;
           });
-        })
-        .catch(error => {
-          console.error('[Service Worker] Fetch failed, serving offline fallback...', error);
-
-          // Serve index.html for document requests when offline
-          if (event.request.destination === 'document') {
-            return caches.match('/index.html');
-          }
+        }).catch(error => {
+          console.error(`Fetch failed for ${event.request.url}:`, error);
         });
-    })
-  );
+      })
+    );
+  }
 });
