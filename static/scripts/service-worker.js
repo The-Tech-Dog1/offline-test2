@@ -1,13 +1,14 @@
-const CACHE_NAME = 'freedom-browser-dynamic-cache-v2';
+const CACHE_NAME = 'freedom-browser-dynamic-cache-v3';
 
 // Resources to pre-cache
-const PRE_CACHE = ['./']; // Add the base page
+const PRE_CACHE = ['/index.html']; // Explicit path instead of './'
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(async cache => {
       for (const resource of PRE_CACHE) {
         try {
+          console.log(`Caching: ${resource}`);
           await cache.add(resource);
         } catch (error) {
           console.error(`Failed to cache ${resource}:`, error);
@@ -36,7 +37,7 @@ self.addEventListener('fetch', event => {
         })
         .catch(() => {
           // Optional: Serve a fallback page or resource
-          return caches.match('./');
+          return caches.match('/index.html');
         });
     })
   );
@@ -49,6 +50,7 @@ self.addEventListener('activate', event => {
       Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
+            console.log(`Deleting old cache: ${cacheName}`);
             return caches.delete(cacheName);
           }
         })
