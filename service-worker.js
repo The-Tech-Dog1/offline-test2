@@ -1,26 +1,26 @@
 const CACHE_NAME = 'freedom-browser-cache-v1';
 
-// Add all your static files here
+// Add all your /offline-test2/static files here
 const urlsToCache = [
     '/',
-    'index.html',
-    'static/manifest.json',
-    'static/styles/index.css',
-    'static/scripts/jquery-3.7.1.min.js',
-    'static/scripts/global.js',
-    'static/scripts/index.js',
-    'static/fonts/Schoolbell.woff2',
-    'static/images/newlogo.webp',
-    'static/images/setting.min.svg',
-    'static/images/more.min.svg',
-    'static/images/savedgames.min.svg',
-    'static/images/privacy.min.svg',
-    'static/images/about.min.svg',
-    'static/images/browser.min.svg',
-    'static/images/whitegameico.min.svg',
-    'static/images/mine.min.svg',
-    'static/images/trust.min.svg',
-    'static/images/joindiscord.min.svg'
+    '/index.html',
+    '/offline-test2/static/manifest.json',
+    '/offline-test2/static/styles/index.css',
+    '/offline-test2/static/scripts/jquery-3.7.1.min.js',
+    '/offline-test2/static/scripts/global.js',
+    '/offline-test2/static/scripts/index.js',
+    '/offline-test2/static/fonts/Schoolbell.woff2',
+    '/offline-test2/static/images/newlogo.webp',
+    '/offline-test2/static/images/setting.min.svg',
+    '/offline-test2/static/images/more.min.svg',
+    '/offline-test2/static/images/savedgames.min.svg',
+    '/offline-test2/static/images/privacy.min.svg',
+    '/offline-test2/static/images/about.min.svg',
+    '/offline-test2/static/images/browser.min.svg',
+    '/offline-test2/static/images/whitegameico.min.svg',
+    '/offline-test2/static/images/mine.min.svg',
+    '/offline-test2/static/images/trust.min.svg',
+    '/offline-test2/static/images/joindiscord.min.svg'
 ];
 
 self.addEventListener('install', function(event) {
