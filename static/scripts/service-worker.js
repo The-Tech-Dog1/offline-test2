@@ -1,81 +1,81 @@
-const CACHE_NAME = 'freedom-browser-v1';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'freedom-browser-cache-v1';
+
+// Add all your static files here
+const urlsToCache = [
     '/',
     '/index.html',
-    '/static/styles/index.css',
-    '/static/scripts/jquery-3.7.1.min.js',
-    '/static/scripts/global.js',
-    '/static/scripts/index.js',
-    '/static/fonts/Schoolbell.woff2',
-    '/static/images/newlogo.webp',
-    '/static/images/setting.min.svg',
-    '/static/images/more.min.svg',
-    '/static/images/savedgames.min.svg',
-    '/static/images/privacy.min.svg',
-    '/static/images/about.min.svg',
-    '/static/images/browser.min.svg',
-    '/static/images/whitegameico.min.svg',
-    '/static/images/mine.min.svg',
-    '/static/images/trust.min.svg',
-    '/static/images/joindiscord.min.svg'
+    '/manifest.json',
+    'static/styles/index.css',
+    'static/scripts/jquery-3.7.1.min.js',
+    'static/scripts/global.js',
+    'static/scripts/index.js',
+    'static/fonts/Schoolbell.woff2',
+    'static/images/newlogo.webp',
+    'static/images/setting.min.svg',
+    'static/images/more.min.svg',
+    'static/images/savedgames.min.svg',
+    'static/images/privacy.min.svg',
+    'static/images/about.min.svg',
+    'static/images/browser.min.svg',
+    'static/images/whitegameico.min.svg',
+    'static/images/mine.min.svg',
+    'static/images/trust.min.svg',
+    'static/images/joindiscord.min.svg'
 ];
 
-// Install event - cache all static assets
-self.addEventListener('install', event => {
+self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => {
-                return cache.addAll(ASSETS_TO_CACHE);
+            .then(function(cache) {
+                console.log('Cache opened');
+                return cache.addAll(urlsToCache);
             })
     );
 });
 
-// Activate event - clean up old caches
-self.addEventListener('activate', event => {
+self.addEventListener('fetch', function(event) {
+    event.respondWith(
+        caches.match(event.request)
+            .then(function(response) {
+                // Cache hit - return response
+                if (response) {
+                    return response;
+                }
+
+                return fetch(event.request).then(
+                    function(response) {
+                        // Check if we received a valid response
+                        if(!response || response.status !== 200 || response.type !== 'basic') {
+                            return response;
+                        }
+
+                        // Clone the response
+                        var responseToCache = response.clone();
+
+                        caches.open(CACHE_NAME)
+                            .then(function(cache) {
+                                cache.put(event.request, responseToCache);
+                            });
+
+                        return response;
+                    }
+                );
+            })
+    );
+});
+
+self.addEventListener('activate', function(event) {
+    var cacheWhitelist = [CACHE_NAME];
+
     event.waitUntil(
-        caches.keys().then(cacheNames => {
+        caches.keys().then(function(cacheNames) {
             return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (cacheName !== CACHE_NAME) {
+                cacheNames.map(function(cacheName) {
+                    if (cacheWhitelist.indexOf(cacheName) === -1) {
                         return caches.delete(cacheName);
                     }
                 })
             );
         })
-    );
-});
-
-// Fetch event - serve from cache first, then network
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                if (response) {
-                    return response; // Return cached version
-                }
-                
-                // Clone the request because it can only be used once
-                return fetch(event.request.clone())
-                    .then(response => {
-                        // Check if we received a valid response
-                        if (!response || response.status !== 200 || response.type !== 'basic') {
-                            return response;
-                        }
-
-                        // Clone the response because it can only be used once
-                        const responseToCache = response.clone();
-
-                        caches.open(CACHE_NAME)
-                            .then(cache => {
-                                cache.put(event.request, responseToCache);
-                            });
-
-                        return response;
-                    });
-            })
-            .catch(() => {
-                // Return a custom offline page if you have one
-                // return caches.match('/offline.html');
-            })
     );
 });
