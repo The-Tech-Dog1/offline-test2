@@ -36,7 +36,7 @@
 
   <script>
     function openDataUrlPage() {
-      // HTML content including a permissive CSP (this CSP does not force HTTPS)
+      // HTML content including a permissive CSP to allow mixed content.
       const content = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,9 +118,10 @@
 </body>
 </html>`;
 
-      // Create a data URL from the content.
-      const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(content);
-      const newTab = window.open(dataUrl, '_blank');
+      // Create a Blob from the HTML content and generate an object URL.
+      const blob = new Blob([content], { type: 'text/html' });
+      const blobUrl = URL.createObjectURL(blob);
+      const newTab = window.open(blobUrl, '_blank');
       if (!newTab) {
         alert("Popup blocked! Please allow popups and try again.");
       }
