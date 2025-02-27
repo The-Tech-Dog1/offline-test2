@@ -35,14 +35,15 @@
   <button class="popup-btn" onclick="openAboutBlank()">Open</button>
 
   <script>
-    function openAboutBlank() {
-      // Open a new about:blank tab
-      const newTab = window.open('about:blank', '_blank');
+      function openAboutBlank() {
+      // Open a completely fresh about:blank page without HTTPS context
+      const newTab = window.open('javascript:""', '_blank');
 
       if (!newTab) {
         alert("Popup blocked! Please allow popups and try again.");
         return;
       }
+
 
       // Inject the provided HTML content
       const content = `<!DOCTYPE html>
