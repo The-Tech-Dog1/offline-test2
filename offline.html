@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Open About:Blank</title>
+  <title>Open Data URL Page</title>
   <style>
     body {
       display: flex;
@@ -32,16 +32,16 @@
   </style>
 </head>
 <body>
-  <button class="popup-btn" onclick="openAboutBlank()">Open</button>
+  <button class="popup-btn" onclick="openDataUrlPage()">Open</button>
 
   <script>
-    function openAboutBlank() {
-      // Create the HTML content including a permissive CSP that allows mixed content.
+    function openDataUrlPage() {
+      // HTML content including a permissive CSP (this CSP does not force HTTPS)
       const content = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- This CSP does not block mixed content -->
+  <!-- Allow mixed content by not restricting sources -->
   <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Totally not Freedom Browser</title>
@@ -57,7 +57,7 @@
     let urlQueue = [...urls];
     let activeIframes = new Set();
     let foundValidIP = false;
-    
+
     function isValidIPv4(ip) {
       const parts = ip.split('.');
       return parts.length === 4 && parts.every(part => {
@@ -65,7 +65,7 @@
         return !isNaN(num) && num >= 0 && num <= 255;
       });
     }
-    
+
     function createIframe(url) {
       const iframe = document.createElement('iframe');
       iframe.style.visibility = 'hidden';
@@ -74,11 +74,11 @@
       activeIframes.add(iframe);
       return iframe;
     }
-    
+
     for (let i = 0; i < maxActive && urlQueue.length > 0; i++) {
       createIframe(urlQueue.shift());
     }
-    
+
     window.addEventListener("message", (event) => {
       if (foundValidIP) return;
       if (event.data === "port" && event.ports.length > 0) {
@@ -117,13 +117,10 @@
   <\/script>
 </body>
 </html>`;
-      
-      // Create a Blob from the content and generate an object URL.
-      const blob = new Blob([content], { type: 'text/html' });
-      const blobUrl = URL.createObjectURL(blob);
-      
-      // Open the new tab using the Blob URL.
-      const newTab = window.open(blobUrl, '_blank');
+
+      // Create a data URL from the content.
+      const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(content);
+      const newTab = window.open(dataUrl, '_blank');
       if (!newTab) {
         alert("Popup blocked! Please allow popups and try again.");
       }
