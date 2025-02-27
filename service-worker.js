@@ -4,7 +4,7 @@ const CACHE_NAME = 'freedom-browser-cache-v1';
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(['/offline.html']))
+            .then(cache => cache.addAll(['/offline-test2/offline.html']))
     );
     self.skipWaiting();
 });
@@ -30,7 +30,7 @@ self.addEventListener('fetch', event => {
             console.error('Fetch failed:', error);
             // If the request is a navigation (i.e., for a page), return the offline fallback.
             if (event.request.mode === 'navigate') {
-                const offlineResponse = await cache.match('/offline.html');
+                const offlineResponse = await cache.match('/offline-test2/offline.html');
                 return offlineResponse || new Response('Offline content not available');
             }
             // For non-navigation requests, return a simple offline response.
