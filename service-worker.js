@@ -1,4 +1,4 @@
-const CACHE_NAME = 'freedom-browser-cache-v5'; // Increment version to force update
+const CACHE_NAME = 'freedom-browser-cache-v6'; // Increment version to force update
 const OFFLINE_PAGE = '/offline-test2/offline.html';
 
 self.addEventListener('install', event => {
