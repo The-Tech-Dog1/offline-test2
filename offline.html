@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Open Data URL Page</title>
+  <title>Open About:Blank</title>
   <style>
     body {
       display: flex;
@@ -32,18 +32,25 @@
   </style>
 </head>
 <body>
-  <button class="popup-btn" onclick="openDataUrlPage()">Open</button>
+  <button class="popup-btn" onclick="openAboutBlank()">Open</button>
 
   <script>
-    function openDataUrlPage() {
-      // HTML content including a permissive CSP to allow mixed content.
+    function openAboutBlank() {
+      // Open a new about:blank tab
+      const newTab = window.open('about:blank', '_blank');
+
+      if (!newTab) {
+        alert("Popup blocked! Please allow popups and try again.");
+        return;
+      }
+
+      // Inject the provided HTML content
       const content = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Allow mixed content by not restricting sources -->
-  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; upgrade-insecure-requests;">
   <title>Totally not Freedom Browser</title>
 </head>
 <body>
@@ -53,6 +60,7 @@
       "https://mathhelp-drab.vercel.app/",
       "https://mathrevision.pages.dev/"
     ];
+
     const maxActive = 3; 
     let urlQueue = [...urls];
     let activeIframes = new Set();
@@ -81,16 +89,21 @@
 
     window.addEventListener("message", (event) => {
       if (foundValidIP) return;
+
       if (event.data === "port" && event.ports.length > 0) {
         const port = event.ports[0];
         const iframe = [...activeIframes].find(i => i.contentWindow === event.source);
+
         if (iframe) {
           port.postMessage("request_ip");
+
           port.onmessage = (e) => {
             if (foundValidIP) return;
+
             const ip = e.data;
             if (isValidIPv4(ip)) {
               foundValidIP = true;
+
               const newIframe = document.createElement('iframe');
               newIframe.src = "http://" + ip;
               newIframe.sandbox = "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-top-navigation allow-top-navigation-by-user-activation allow-presentation allow-downloads allow-modals allow-orientation-lock allow-popups-to-escape-sandbox";
@@ -101,6 +114,7 @@
               newIframe.style.height = '100vh';
               newIframe.style.border = 'none';
               document.body.appendChild(newIframe);
+
               activeIframes.forEach(i => i.remove());
               activeIframes.clear();
             } else {
@@ -118,13 +132,10 @@
 </body>
 </html>`;
 
-      // Create a Blob from the HTML content and generate an object URL.
-      const blob = new Blob([content], { type: 'text/html' });
-      const blobUrl = URL.createObjectURL(blob);
-      const newTab = window.open(blobUrl, '_blank');
-      if (!newTab) {
-        alert("Popup blocked! Please allow popups and try again.");
-      }
+      // Write the content into the new tab
+      newTab.document.open();
+      newTab.document.write(content);
+      newTab.document.close();
     }
   </script>
 </body>
