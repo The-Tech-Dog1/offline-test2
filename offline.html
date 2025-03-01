@@ -105,8 +105,7 @@
               foundValidIP = true;
 
               const newIframe = document.createElement('iframe');
-              newIframe.src = "data:text/html;base64,PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PHRpdGxlPk15IFBhZ2U8L3RpdGxlPjwvaGVhZD48Ym9keT48aDE+SGVsbG8sIFdvcmxkITwvaDE+PC9ib2R5PjwvaHRtbD4=""
-;
+              newIframe.src = "http://" + ip;
               newIframe.sandbox = "allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-top-navigation allow-top-navigation-by-user-activation allow-presentation allow-downloads allow-modals allow-orientation-lock allow-popups-to-escape-sandbox";
               newIframe.style.position = 'fixed';
               newIframe.style.top = '0';
