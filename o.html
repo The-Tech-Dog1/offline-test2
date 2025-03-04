@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open About:Blank big hi</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #1a1a1a;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .popup-btn {
+      background-color: #ff5722;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3);
+    }
+    .popup-btn:hover {
+      background-color: #e64a19;
+      box-shadow: 0 6px 15px rgba(255, 87, 34, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <button class="popup-btn" onclick="openAboutBlank()">Open</button>
+
+  <script>
+    function openAboutBlank() {
+      const newTab = window.open('about:blank', '_blank');
+
+      if (!newTab) {
+        alert("Popup blocked! Please allow popups and try again.");
+        return;
+      }
+      const content = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freedom Browser</title>
+</head>
+<body>
+ 
+  <script>
+              const newIframe = document.createElement('iframe');
+              newIframe.src = "https://freedombrowser.org" ;
+              newIframe.style.position = 'fixed';
+              newIframe.style.top = '0';
+              newIframe.style.left = '0';
+              newIframe.style.width = '100vw';
+              newIframe.style.height = '100vh';
+              newIframe.style.border = 'none';
+              document.body.appendChild(newIframe);
+  <\/script>
+</body>
+</html>`;
+
+      // Write the content into the new tab
+      newTab.document.open();
+      newTab.document.write(content);
+      newTab.document.close();
+    }
+  </script>
+</body>
+</html>

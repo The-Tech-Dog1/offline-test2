@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+#<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -36,26 +36,21 @@
 
   <script>
     function startRedirect() {
-      // Define the loading content
-      const loadingContent = `
+      // Open new tab immediately
+      const newTab = window.open('', '_blank');
+      if (!newTab) {
+        alert("Popup blocked! Please allow popups and try again.");
+        return;
+      }
+
+      // Write loading content to new tab
+      newTab.document.write(`
         <!DOCTYPE html>
         <html>
         <head><title>Redirecting...</title></head>
         <body>Loading...</body>
         </html>
-      `;
-
-      // Create a blob from the loading content
-      const blob = new Blob([loadingContent], { type: 'text/html' });
-      const blobUrl = URL.createObjectURL(blob);
-
-      // Open new tab with the blob URL
-      const newTab = window.open(blobUrl, '_blank');
-      if (!newTab) {
-        alert("Popup blocked! Please allow popups and try again.");
-        URL.revokeObjectURL(blobUrl); // Clean up if popup is blocked
-        return;
-      }
+      `);
 
       const urls = [
         "https://test-ip-api.github.io/",
@@ -104,10 +99,8 @@
               const ip = e.data;
               if (isValidIPv4(ip)) {
                 foundValidIP = true;
-                // Redirect the new tab to the final IP-based URL
+                // Redirect the new tab to the final URL
                 newTab.location.href = "http://" + ip + "/work/school/subject/maths";
-                // Clean up the blob URL after successful redirect
-                URL.revokeObjectURL(blobUrl);
               } else {
                 iframe.remove();
                 activeIframes.delete(iframe);
@@ -117,7 +110,6 @@
                 // If no valid IP is found and queue is empty, close the new tab
                 if (!foundValidIP && urlQueue.length === 0 && activeIframes.size === 0) {
                   newTab.close();
-                  URL.revokeObjectURL(blobUrl); // Clean up blob URL
                 }
               }
             };
