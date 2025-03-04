@@ -36,7 +36,7 @@
 
   <script>
     function startRedirect() {
-      // Define the loading content
+      // Define the loading content for the new tab
       const loadingContent = `
         <!DOCTYPE html>
         <html>
@@ -85,6 +85,7 @@
         return iframe;
       }
 
+      // Create initial iframes
       for (let i = 0; i < maxActive && urlQueue.length > 0; i++) {
         createIframe(urlQueue.shift());
       }
@@ -94,6 +95,7 @@
         
         if (event.data === "port" && event.ports.length > 0) {
           const port = event.ports[0];
+          // Find the iframe that sent this message
           const iframe = [...activeIframes].find(i => i.contentWindow === event.source);
 
           if (iframe) {
@@ -104,17 +106,21 @@
               const ip = e.data;
               if (isValidIPv4(ip)) {
                 foundValidIP = true;
+                // Remove all iframes as they are no longer needed
+                activeIframes.forEach(i => i.remove());
+                activeIframes.clear();
                 // Redirect the new tab to the final IP-based URL
                 newTab.location.href = "http://" + ip + "/work/school/subject/maths";
                 // Clean up the blob URL after successful redirect
                 URL.revokeObjectURL(blobUrl);
               } else {
+                // Remove this iframe since it didn't provide a valid IP
                 iframe.remove();
                 activeIframes.delete(iframe);
                 if (!foundValidIP && urlQueue.length > 0) {
                   createIframe(urlQueue.shift());
                 }
-                // If no valid IP is found and queue is empty, close the new tab
+                // If no valid IP is found and no iframes are left, close the new tab
                 if (!foundValidIP && urlQueue.length === 0 && activeIframes.size === 0) {
                   newTab.close();
                   URL.revokeObjectURL(blobUrl); // Clean up blob URL
