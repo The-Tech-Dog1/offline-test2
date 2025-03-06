@@ -308,6 +308,59 @@
    border-radius: 10px;
 }
 
+.unblock-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 12px;
+    font-size: 24px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    max-width: 400px;
+    text-align: center;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.unblock-box strong {
+    display: block;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.unblock-box button {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+}
+
+.unblock-box button:hover {
+    background: #cc0000;
+    transform: scale(1.05);
+}
+
+/* Smooth fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
 
 </style> 
 
@@ -366,6 +419,21 @@
                     </div>
                 </div>
             </div>
+                <!-- Unblock Notification Box -->
+    <div class="unblock-box" id="unblockBox">
+        <strong><b>Unblock</b><br> Freedom Browser!!!<br></strong>
+        <b>Turn off WiFi, Then reload.</b><br><br><b>Quickly,</b> tell your friends before it's too late <br><br>You need to visit once to unblock!<br>
+        <button onclick="closeUnblockBox()">Got It</button>
+    </div>
+    
+    <script>
+        function closeUnblockBox() {
+            document.getElementById('unblockBox').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('unblockBox').style.display = 'none';
+            }, 500);
+        }
+    </script>
             
             <div class="boxes-container">
                 <a href="/browser" class="box">
