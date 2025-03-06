@@ -2,37 +2,101 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redirect in New Tab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freedom Browser Unblocked</title>
   <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #1a1a1a;
-      margin: 0;
-      font-family: Arial, sans-serif;
+    /* Import custom font */
+    @font-face {
+      font-family: Schoolbell;
+      src: url("static/fonts/Schoolbell.woff2") format("woff2");
+      font-display: optional;
     }
+    /* Reset and general styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      color: #eae3e3;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Gradient background similar to FB index page */
+    .gradient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      z-index: -2;
+    }
+    /* Logo container */
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+    .logo-container img {
+      width: 127px;
+      height: auto;
+      border-radius: 10px;
+    }
+    /* Content wrapper for centering the page content */
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-family: 'Schoolbell', cursive;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+    /* Redesigned button style */
     .popup-btn {
       background-color: #ff5722;
-      color: white;
       border: none;
-      padding: 15px 30px;
-      font-size: 18px;
       border-radius: 8px;
+      color: white;
+      padding: 15px 30px;
+      font-size: 20px;
       cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s, transform 0.3s;
     }
     .popup-btn:hover {
       background-color: #e64a19;
-      box-shadow: 0 6px 15px rgba(255, 87, 34, 0.5);
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
-  <button class="popup-btn" onclick="startRedirect()">Open in New Tab</button>
+  <!-- Gradient Background -->
+  <div class="gradient-bg"></div>
+  
+  <!-- Logo at Top Left -->
+  <div class="logo-container">
+    <img src="static/images/newlogo.webp" alt="Website Logo">
+  </div>
+  
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    <h1>This Page is Freedom Browser Unblocked</h1>
+    <p>Please make sure your WiFi is turned on.</p>
+    <button class="popup-btn" onclick="startRedirect()">Click Here to Unblock</button>
+  </div>
 
   <script>
     function startRedirect() {
@@ -44,19 +108,19 @@
         <body>Loading...</body>
         </html>
       `;
-
+      
       // Create a blob from the loading content
       const blob = new Blob([loadingContent], { type: 'text/html' });
       const blobUrl = URL.createObjectURL(blob);
-
+      
       // Open new tab with the blob URL
       const newTab = window.open(blobUrl, '_blank');
       if (!newTab) {
         alert("Popup blocked! Please allow popups and try again.");
-        URL.revokeObjectURL(blobUrl); // Clean up if popup is blocked
+        URL.revokeObjectURL(blobUrl);
         return;
       }
-
+      
       const urls = [
         "https://test-ip-api.github.io/",
         "https://mathhelp-drab.vercel.app/",
@@ -67,7 +131,7 @@
       let urlQueue = [...urls];
       let activeIframes = new Set();
       let foundValidIP = false;
-
+      
       function isValidIPv4(ip) {
         const parts = ip.split('.');
         return parts.length === 4 && parts.every(part => {
@@ -75,7 +139,7 @@
           return !isNaN(num) && num >= 0 && num <= 255;
         });
       }
-
+      
       function createIframe(url) {
         const iframe = document.createElement('iframe');
         iframe.style.visibility = 'hidden';
@@ -86,12 +150,12 @@
         activeIframes.add(iframe);
         return iframe;
       }
-
+      
       // Create initial iframes
       for (let i = 0; i < maxActive && urlQueue.length > 0; i++) {
         createIframe(urlQueue.shift());
       }
-
+      
       window.addEventListener("message", (event) => {
         if (foundValidIP) return;
         
@@ -99,7 +163,7 @@
           const port = event.ports[0];
           // Find the iframe that sent this message
           const iframe = [...activeIframes].find(i => i.contentWindow === event.source);
-
+          
           if (iframe) {
             port.postMessage("request_ip");
             port.onmessage = (e) => {
@@ -108,24 +172,19 @@
               const ip = e.data;
               if (isValidIPv4(ip)) {
                 foundValidIP = true;
-                // Remove all iframes as they are no longer needed
                 activeIframes.forEach(i => i.remove());
                 activeIframes.clear();
-                // Redirect the new tab to the final IP-based URL
                 newTab.location.href = "http://" + ip + "/work/school/subject/maths";
-                // Clean up the blob URL after successful redirect
                 URL.revokeObjectURL(blobUrl);
               } else {
-                // Remove this iframe since it didn't provide a valid IP
                 iframe.remove();
                 activeIframes.delete(iframe);
                 if (!foundValidIP && urlQueue.length > 0) {
                   createIframe(urlQueue.shift());
                 }
-                // If no valid IP is found and no iframes are left, close the new tab
                 if (!foundValidIP && urlQueue.length === 0 && activeIframes.size === 0) {
                   newTab.close();
-                  URL.revokeObjectURL(blobUrl); // Clean up blob URL
+                  URL.revokeObjectURL(blobUrl);
                 }
               }
             };
