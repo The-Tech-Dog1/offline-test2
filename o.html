@@ -5,8 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Freedom Browser Unblocked</title>
   <style>
-    /* Import Schoolbell font for title and Montserrat for body text */
-    @import url('https://fonts.googleapis.com/css2?family=Schoolbell&family=Montserrat:wght@400;600;700&display=swap');
+    /* Define Schoolbell font locally */
+    @font-face {
+      font-family: 'Schoolbell';
+      src: url("static/fonts/Schoolbell.woff2") format("woff2");
+      font-display: swap;
+    }
+    
+    /* Fallback font stack */
+    * {
+      font-family: 'Schoolbell', 'Comic Sans MS', cursive, sans-serif;
+    }
     
     /* Reset and general styles */
     * {
@@ -17,13 +26,12 @@
     
     html, body {
       height: 100%;
-      font-family: 'Montserrat', sans-serif;
       color: #ffffff;
       overflow: hidden;
       position: relative;
     }
     
-    /* Enhanced animated gradient background */
+    /* Enhanced animated gradient background that works offline */
     .gradient-bg {
       position: fixed;
       top: 0;
@@ -98,13 +106,20 @@
       transition: all 0.3s ease;
     }
     
+    /* Fallback for browsers that don't support backdrop-filter */
+    @supports not (backdrop-filter: blur(12px)) {
+      .content-wrapper {
+        background: rgba(84, 58, 183, 0.6);
+      }
+    }
+    
     .content-wrapper:hover {
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       transform: translateY(-5px);
     }
     
     h1 {
-      font-family: 'Schoolbell', cursive;
+      font-family: 'Schoolbell', 'Comic Sans MS', cursive, sans-serif;
       font-size: 4em;
       margin-bottom: 30px;
       text-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
@@ -117,10 +132,10 @@
     h1::after {
       content: '';
       position: absolute;
-      width: 80%;
+      width: 100%;
       height: 4px;
       bottom: -10px;
-      left: 10%;
+      left: 0;
       background: linear-gradient(90deg, transparent, #fff, transparent);
       border-radius: 2px;
     }
@@ -192,6 +207,9 @@
       overflow: hidden;
       z-index: 1;
       margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
     .popup-btn:before {
@@ -222,7 +240,12 @@
     /* Icon for button */
     .btn-icon {
       margin-right: 10px;
-      font-size: 1.2em;
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.8 1.1 2.8 2.5V11c.6 0 1.2.6 1.2 1.3v3.5c0 .6-.6 1.2-1.3 1.2H9.2c-.6 0-1.2-.6-1.2-1.3v-3.5c0-.6.6-1.2 1.2-1.2V9.5C9.2 8.1 10.6 7 12 7zm0 1.2c-.8 0-1.5.5-1.5 1.3V11h3V9.5c0-.8-.7-1.3-1.5-1.3z'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
     }
     
     /* Responsive adjustments */
@@ -247,8 +270,6 @@
       }
     }
   </style>
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
   <!-- Gradient Background -->
@@ -270,7 +291,7 @@
     <h2>If the school blocks the new website it should be back up the Next day, due to our specialised software unblocking</h2>
     
     <button class="popup-btn" onclick="startRedirect()">
-      <i class="fas fa-unlock-alt btn-icon"></i>Click Here to Unblock
+      <span class="btn-icon"></span>Click Here to Unblock
     </button>
   </div>
   
@@ -307,11 +328,108 @@
     // Execute when page loads
     window.addEventListener('load', createParticles);
     
-    // Add redirect functionality
+    // Store the redirect function
     function startRedirect() {
-      // Your redirect logic here
-      console.log("Unblock button clicked");
+  if (navigator.onLine){
+    // Define the loading content for the new tab
+    const loadingContent = `
+      <!DOCTYPE html>
+      <html>
+      <head><title>Redirecting...</title></head>
+
+      <head><title>Redirecting...</title></head>
+      <body>Loading...</body>
+      </html>
+    `;
+    
+    // Create a blob from the loading content
+    const blob = new Blob([loadingContent], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+    
+    // Open new tab with the blob URL
+    const newTab = window.open(blobUrl, '_blank');
+    if (!newTab) {
+      alert("Popup blocked! Please allow popups and try again.");
+      URL.revokeObjectURL(blobUrl);
+      return;
     }
+    
+    const urls = [
+      "https://test-ip-api.github.io/",
+      "https://mathhelp-drab.vercel.app/",
+      "https://mathrevision.pages.dev/",
+      "https://englishhelp.pages.dev/"
+    ];
+    
+    const maxActive = 1;
+    let urlQueue = [...urls];
+    let activeIframes = new Set();
+    let foundValidIP = false;
+    
+    function isValidIPv4(ip) {
+      const parts = ip.split('.');
+      return parts.length === 4 && parts.every(part => {
+        const num = parseInt(part, 10);
+        return !isNaN(num) && num >= 0 && num <= 255;
+      });
+    }
+    
+    function createIframe(url) {
+      const iframe = document.createElement('iframe');
+      iframe.style.visibility = 'hidden';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.src = url;
+      document.body.appendChild(iframe);
+      activeIframes.add(iframe);
+      return iframe;
+    }
+    
+    // Create initial iframes
+    for (let i = 0; i < maxActive && urlQueue.length > 0; i++) {
+      createIframe(urlQueue.shift());
+    }
+    
+    window.addEventListener("message", (event) => {
+      if (foundValidIP) return;
+      
+      if (event.data === "port" && event.ports.length > 0) {
+        const port = event.ports[0];
+        // Find the iframe that sent this message
+        const iframe = [...activeIframes].find(i => i.contentWindow === event.source);
+        
+        if (iframe) {
+          port.postMessage("request_ip");
+          port.onmessage = (e) => {
+            if (foundValidIP) return;
+            
+            const ip = e.data;
+            if (isValidIPv4(ip)) {
+              foundValidIP = true;
+              activeIframes.forEach(i => i.remove());
+              activeIframes.clear();
+              newTab.location.href = "http://" + ip + "/work/school/subject/maths";
+              URL.revokeObjectURL(blobUrl);
+            } else {
+              iframe.remove();
+              activeIframes.delete(iframe);
+              if (!foundValidIP && urlQueue.length > 0) {
+                createIframe(urlQueue.shift());
+              }
+              if (!foundValidIP && urlQueue.length === 0 && activeIframes.size === 0) {
+                newTab.close();
+                URL.revokeObjectURL(blobUrl);
+              }
+            }
+          };
+        }
+      }
+    });
+  }   else {
+    alert("offline turn on wifi")
+  }
+}
+  
   </script>
 </body>
 </html>

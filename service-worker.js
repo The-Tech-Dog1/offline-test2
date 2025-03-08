@@ -1,4 +1,4 @@
-const CACHE_NAME = 'freedom-browser-cache-dynamic10';
+const CACHE_NAME = 'freedom-browser-cache-dynamic11';
 const OFFLINE_PAGE = '/offline-test2/offline.html';
 
 // Install event: Cache the offline page initially
