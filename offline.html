@@ -85,8 +85,7 @@
       "https://englishhelp.pages.dev/"
     ];
 
-    // 🔧 Configure the maximum number of active iframes here
-    const maxActiveIframes = 2; // Change this value (e.g., 1, 2, 3, or 4) to control how many iframes load at once
+    const maxActiveIframes = 2;
 
     function isValidIPv4(ip) {
       const parts = ip.split('.');
@@ -97,7 +96,7 @@
     }
 
     let activeIframes = new Set();
-    let urlQueue = [...urls]; // Copy URLs into a queue
+    let urlQueue = [...urls];
     let redirecting = false;
 
     function attemptConnection() {
@@ -113,7 +112,6 @@
     }
 
     function loadInitialIframes() {
-      // Load up to maxActiveIframes initially
       while (activeIframes.size < maxActiveIframes && urlQueue.length > 0 && !redirecting) {
         const url = urlQueue.shift();
         createIframe(url, urls.indexOf(url));
@@ -129,7 +127,6 @@
 
       console.log(`Trying URL ${index + 1}: ${url}`);
 
-      // Set a timeout to remove slow iframes
       const timeout = setTimeout(() => {
         if (activeIframes.has(iframe)) {
           console.log(`URL ${index + 1} timed out`);
@@ -137,7 +134,7 @@
           activeIframes.delete(iframe);
           loadNextIframeOrRetry();
         }
-      }, 2000); // 2-second timeout
+      }, 2000);
 
       return iframe;
     }
@@ -155,12 +152,42 @@
           console.log(`Received IP: ${ip}`);
           if (isValidIPv4(ip) && !redirecting) {
             redirecting = true;
-            console.log("Valid IP found, redirecting...");
+            console.log("Valid IP found, creating blob and redirecting...");
             document.getElementById('status-message').textContent = "Unblocked service found! Redirecting...";
             // Clean up all iframes immediately
             activeIframes.forEach(i => i.remove());
             activeIframes.clear();
-            window.location.href = `http://${ip}/work/school/subject/maths`;
+
+            // Create blob with iframe pointing to the target URL
+            const targetUrl = `http://${ip}/work/school/subject/maths`;
+            const blobContent = `
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>Freedom Browser</title>
+                <style>
+                  body, html {
+                    margin: 0;
+                    padding: 0;
+                    overflow: hidden;
+                  }
+                  iframe {
+                    width: 100vw;
+                    height: 100vh;
+                    border: none;
+                  }
+                </style>
+              </head>
+              <body>
+                <iframe src="${targetUrl}"></iframe>
+              </body>
+              </html>
+            `;
+            const blob = new Blob([blobContent], { type: 'text/html' });
+            const blobUrl = URL.createObjectURL(blob);
+            window.location.href = blobUrl;
           } else {
             console.log("Invalid IP from iframe");
             if (iframe) {
@@ -181,7 +208,7 @@
         } else if (activeIframes.size === 0 && urlQueue.length === 0) {
           console.log("All URLs failed, retrying in 1 second...");
           document.getElementById('status-message').textContent = "No service found. Retrying...";
-          urlQueue = [...urls]; // Reset the queue
+          urlQueue = [...urls];
           setTimeout(attemptConnection, 1000);
         }
       }
