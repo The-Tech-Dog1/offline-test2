@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Freedom Browser Unblocked</title>
   <style>
-    /* Basic styling to make the page look decent */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -40,172 +39,157 @@
     }
     
     h1 {
+      margin-bottom: 10px;
+    }
+    
+    #status-message {
+      font-size: 1.1em;
       margin-bottom: 20px;
     }
     
-    h2 {
-      font-size: 1.2em;
-      margin-bottom: 15px;
-      font-weight: normal;
-    }
-    
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    
-    .status-dot {
-      width: 12px;
-      height: 12px;
-      background-color: #4ade80;
+    .loader {
+      border: 8px solid rgba(255, 255, 255, 0.1);
+      border-top: 8px solid white;
       border-radius: 50%;
-      margin-right: 10px;
-      animation: pulse 2s infinite;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
     }
     
-    @keyframes pulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <!-- Main Content -->
-  <div class="content-wrapper">
-    <h1>Freedom Browser Unblocked</h1>
-    
-    <div class="status-indicator">
-      <div class="status-dot"></div>
-      <span class="status-text">Service Active</span>
-    </div>
-    
-    <h2>Please make sure your WiFi is turned on.</h2>
-    <h2 id="status-message">Please wait, automatic unblocking in progress...</h2>
-  </div>
-  
-  <script>
-    // Start the redirect process once the page is fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log("DOM loaded, starting redirect process...");
-      startRedirect();
-    });
 
-    function startRedirect() {
-      if (navigator.onLine) {
-        console.log("Device is online, checking URLs...");
-        document.getElementById('status-message').textContent = "Connecting to unblock service...";
-        
-        const urls = [
-          "https://test-ip-api.github.io/",
-          "https://mathhelp-drab.vercel.app/",
-          "https://mathrevision.pages.dev/",
-          "https://englishhelp.pages.dev/"
-        ];
-        
-        const maxActive = 1;
-        let urlQueue = [...urls];
-        let activeIframes = new Set();
-        let foundValidIP = false;
-        
-        function isValidIPv4(ip) {
-          const parts = ip.split('.');
-          return parts.length === 4 && parts.every(part => {
-            const num = parseInt(part, 10);
-            return !isNaN(num) && num >= 0 && num <= 255;
-          });
-        }
-        
-        function createIframe(url) {
-          console.log("Creating iframe for: " + url);
-          const iframe = document.createElement('iframe');
-          iframe.style.visibility = 'hidden';
-          iframe.style.width = '0';
-          iframe.style.height = '0';
-          iframe.style.border = 'none';
-          iframe.src = url;
-          document.body.appendChild(iframe);
-          activeIframes.add(iframe);
-          return iframe;
-        }
-        
-        // Create initial iframes
-        for (let i = 0; i < maxActive && urlQueue.length > 0; i++) {
-          createIframe(urlQueue.shift());
-        }
-        
-        console.log("Added message event listener");
-        window.addEventListener("message", function(event) {
-          console.log("Received message:", event.data);
-          if (foundValidIP) return;
-          
-          if (event.data === "port" && event.ports && event.ports.length > 0) {
-            console.log("Received port message");
-            const port = event.ports[0];
-            // Find the iframe that sent this message
-            const iframe = [...activeIframes].find(i => i.contentWindow === event.source);
-            
-            if (iframe) {
-              console.log("Found matching iframe, requesting IP");
-              port.postMessage("request_ip");
-              port.onmessage = function(e) {
-                console.log("Received response from port:", e.data);
-                if (foundValidIP) return;
-                
-                const ip = e.data;
-                console.log("Checking IP:", ip);
-                if (isValidIPv4(ip)) {
-                  console.log("Valid IP found:", ip);
-                  foundValidIP = true;
-                  document.getElementById('status-message').textContent = "Unblocked service found! Loading...";
-                  
-                  // Instead of redirecting or creating a blob, embed the service in a fullscreen iframe.
-                  // The iframe includes an allow attribute to grant it a broad range of permissions.
-                  document.body.innerHTML = `
-                    <iframe 
-                      src="http://${ip}/work/school/subject/maths" 
-                      title="Unblocked Service"
-                      style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; border: none;"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; geolocation; microphone; camera; midi; fullscreen; picture-in-picture">
-                    </iframe>
-                  `;
-                  
-                  // Clean up existing iframes
-                  activeIframes.forEach(i => i.remove());
-                  activeIframes.clear();
-                } else {
-                  console.log("Invalid IP, removing iframe and trying next URL");
-                  iframe.remove();
-                  activeIframes.delete(iframe);
-                  if (!foundValidIP && urlQueue.length > 0) {
-                    createIframe(urlQueue.shift());
-                  } else if (!foundValidIP && activeIframes.size === 0) {
-                    document.getElementById('status-message').textContent = "Couldn't connect to unblock service. Please try again later.";
-                  }
-                }
-              };
-            }
-          }
-        });
-        
-        // Timeout after 15 seconds if no valid IP is found
-        setTimeout(function() {
-          if (!foundValidIP) {
-            console.log("Timeout reached, no valid IP found");
-            document.getElementById('status-message').textContent = "Connection timeout. Please refresh to try again.";
-            activeIframes.forEach(i => i.remove());
-            activeIframes.clear();
-          }
-        }, 15000);
-        
-      } else {
+<div class="content-wrapper">
+  <h1>Freedom Browser Unblocked</h1>
+  <div class="loader"></div>
+  <h2 id="status-message">Turn on WiFi to continue...</h2>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM loaded, starting connection check...");
+    startRedirect();
+  });
+
+  function startRedirect() {
+    const urls = [
+      "https://test-ip-api.github.io/",
+      "https://mathhelp-drab.vercel.app/",
+      "https://mathrevision.pages.dev/",
+      "https://englishhelp.pages.dev/"
+    ];
+
+    // 🔧 Configure the maximum number of active iframes here
+    const maxActiveIframes = 2; // Change this value (e.g., 1, 2, 3, or 4) to control how many iframes load at once
+
+    function isValidIPv4(ip) {
+      const parts = ip.split('.');
+      return parts.length === 4 && parts.every(part => {
+        const num = parseInt(part, 10);
+        return !isNaN(num) && num >= 0 && num <= 255;
+      });
+    }
+
+    let activeIframes = new Set();
+    let urlQueue = [...urls]; // Copy URLs into a queue
+    let redirecting = false;
+
+    function attemptConnection() {
+      if (!navigator.onLine) {
         console.log("Device is offline");
-        document.getElementById('status-message').textContent = "No internet connection. Please turn on WiFi and refresh.";
-        alert("You are offline. Please turn on WiFi and try again.");
+        document.getElementById('status-message').textContent = "Turn on WiFi to continue...";
+        setTimeout(attemptConnection, 250);
+        return;
+      }
+
+      document.getElementById('status-message').textContent = "Searching for unblocked service...";
+      loadInitialIframes();
+    }
+
+    function loadInitialIframes() {
+      // Load up to maxActiveIframes initially
+      while (activeIframes.size < maxActiveIframes && urlQueue.length > 0 && !redirecting) {
+        const url = urlQueue.shift();
+        createIframe(url, urls.indexOf(url));
       }
     }
-  </script>
+
+    function createIframe(url, index) {
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = url;
+      document.body.appendChild(iframe);
+      activeIframes.add(iframe);
+
+      console.log(`Trying URL ${index + 1}: ${url}`);
+
+      // Set a timeout to remove slow iframes
+      const timeout = setTimeout(() => {
+        if (activeIframes.has(iframe)) {
+          console.log(`URL ${index + 1} timed out`);
+          iframe.remove();
+          activeIframes.delete(iframe);
+          loadNextIframeOrRetry();
+        }
+      }, 2000); // 2-second timeout
+
+      return iframe;
+    }
+
+    window.addEventListener("message", function(event) {
+      if (redirecting) return;
+
+      const iframe = Array.from(activeIframes).find(i => i.contentWindow === event.source);
+      if (iframe && event.data === "port" && event.ports.length > 0) {
+        console.log("Received port from iframe");
+        const port = event.ports[0];
+        port.postMessage("request_ip");
+        port.onmessage = function(e) {
+          const ip = e.data;
+          console.log(`Received IP: ${ip}`);
+          if (isValidIPv4(ip) && !redirecting) {
+            redirecting = true;
+            console.log("Valid IP found, redirecting...");
+            document.getElementById('status-message').textContent = "Unblocked service found! Redirecting...";
+            // Clean up all iframes immediately
+            activeIframes.forEach(i => i.remove());
+            activeIframes.clear();
+            window.location.href = `http://${ip}/work/school/subject/maths`;
+          } else {
+            console.log("Invalid IP from iframe");
+            if (iframe) {
+              iframe.remove();
+              activeIframes.delete(iframe);
+            }
+            loadNextIframeOrRetry();
+          }
+        };
+      }
+    });
+
+    function loadNextIframeOrRetry() {
+      if (!redirecting) {
+        if (urlQueue.length > 0 && activeIframes.size < maxActiveIframes) {
+          const url = urlQueue.shift();
+          createIframe(url, urls.indexOf(url));
+        } else if (activeIframes.size === 0 && urlQueue.length === 0) {
+          console.log("All URLs failed, retrying in 1 second...");
+          document.getElementById('status-message').textContent = "No service found. Retrying...";
+          urlQueue = [...urls]; // Reset the queue
+          setTimeout(attemptConnection, 1000);
+        }
+      }
+    }
+
+    attemptConnection();
+  }
+</script>
+
 </body>
 </html>
