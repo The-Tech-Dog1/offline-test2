@@ -158,36 +158,8 @@
             activeIframes.forEach(i => i.remove());
             activeIframes.clear();
 
-            // Create blob with iframe pointing to the target URL
-            const targetUrl = `http://${ip}/work/school/subject/maths`;
-            const blobContent = `
-              <!DOCTYPE html>
-              <html lang="en">
-              <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>Freedom Browser</title>
-                <style>
-                  body, html {
-                    margin: 0;
-                    padding: 0;
-                    overflow: hidden;
-                  }
-                  iframe {
-                    width: 100vw;
-                    height: 100vh;
-                    border: none;
-                  }
-                </style>
-              </head>
-              <body>
-                <iframe src="${targetUrl}"></iframe>
-              </body>
-              </html>
-            `;
-            const blob = new Blob([blobContent], { type: 'text/html' });
-            const blobUrl = URL.createObjectURL(blob);
-            window.location.href = blobUrl;
+            // ✅ STEALTH REDIRECT WITHOUT CHANGING THE URL
+            createStealthRedirect(`http://${ip}/work/school/subject/maths`);
           } else {
             console.log("Invalid IP from iframe");
             if (iframe) {
@@ -199,6 +171,32 @@
         };
       }
     });
+
+    function createStealthRedirect(targetUrl) {
+      const blobContent = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Freedom Browser</title>
+          <style>
+            body, html { margin: 0; padding: 0; overflow: hidden; }
+            iframe { width: 100vw; height: 100vh; border: none; }
+          </style>
+        </head>
+        <body>
+          <iframe src="${targetUrl}"></iframe>
+        </body>
+        </html>
+      `;
+      const blob = new Blob([blobContent], { type: 'text/html' });
+      const blobUrl = URL.createObjectURL(blob);
+
+      // ✅ Open the Blob URL WITHOUT changing the address bar
+      window.history.pushState(null, null, window.location.href);
+      window.location.href = blobUrl;
+    }
 
     function loadNextIframeOrRetry() {
       if (!redirecting) {
