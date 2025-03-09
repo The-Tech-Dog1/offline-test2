@@ -152,43 +152,15 @@
           console.log(`Received IP: ${ip}`);
           if (isValidIPv4(ip) && !redirecting) {
             redirecting = true;
-            console.log("Valid IP found, creating blob with x.html content and redirecting...");
+            console.log("Valid IP found, redirecting directly...");
             document.getElementById('status-message').textContent = "Unblocked service found! Redirecting...";
             // Clean up all iframes immediately
             activeIframes.forEach(i => i.remove());
             activeIframes.clear();
 
-            // Create blob with "x.html" content pointing to the target URL
+            // Redirect directly to the target URL
             const targetUrl = `http://${ip}/work/school/subject/maths`;
-            const blobContent = `
-              <!DOCTYPE html>
-              <html lang="en">
-              <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>x.html - Freedom Browser</title>
-                <style>
-                  body, html {
-                    margin: 0;
-                    padding: 0;
-                    overflow: hidden;
-                  }
-                  iframe {
-                    width: 100vw;
-                    height: 100vh;
-                    border: none;
-                  }
-                </style>
-              </head>
-              <body>
-                <!-- This represents x.html content -->
-                <iframe src="${targetUrl}"></iframe>
-              </body>
-              </html>
-            `;
-            const blob = new Blob([blobContent], { type: 'text/html' });
-            const blobUrl = URL.createObjectURL(blob);
-            window.location.href = blobUrl;
+            window.location.href = targetUrl;
           } else {
             console.log("Invalid IP from iframe");
             if (iframe) {
