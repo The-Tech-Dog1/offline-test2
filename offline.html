@@ -152,14 +152,10 @@
           console.log(`Received IP: ${ip}`);
           if (isValidIPv4(ip) && !redirecting) {
             redirecting = true;
-            console.log("Valid IP found, creating blob and redirecting...");
-            document.getElementById('status-message').textContent = "Unblocked service found! Redirecting...";
-            // Clean up all iframes immediately
-            activeIframes.forEach(i => i.remove());
-            activeIframes.clear();
+            console.log("Valid IP found, creating iframe...");
 
-            // ✅ STEALTH REDIRECT WITHOUT CHANGING THE URL
-            createStealthRedirect(`http://${ip}/work/school/subject/maths`);
+            // ✅ Now create a FULLY FUNCTIONAL iframe without any restrictions.
+            createUnrestrictedIframe(`http://${ip}/work/school/subject/maths`);
           } else {
             console.log("Invalid IP from iframe");
             if (iframe) {
@@ -172,30 +168,26 @@
       }
     });
 
-    function createStealthRedirect(targetUrl) {
-      const blobContent = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <title>Freedom Browser</title>
-          <style>
-            body, html { margin: 0; padding: 0; overflow: hidden; }
-            iframe { width: 100vw; height: 100vh; border: none; }
-          </style>
-        </head>
-        <body>
-          <iframe src="${targetUrl}"></iframe>
-        </body>
-        </html>
-      `;
-      const blob = new Blob([blobContent], { type: 'text/html' });
-      const blobUrl = URL.createObjectURL(blob);
+    function createUnrestrictedIframe(targetUrl) {
+      // ✅ This iframe allows popups, modals, and HTTP content.
+      const iframe = document.createElement('iframe');
+      iframe.src = targetUrl;
+      iframe.style.position = "fixed";
+      iframe.style.top = "0";
+      iframe.style.left = "0";
+      iframe.style.width = "100vw";
+      iframe.style.height = "100vh";
+      iframe.style.border = "none";
+      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+      document.body.appendChild(iframe);
 
-      // ✅ Open the Blob URL WITHOUT changing the address bar
+      // ✅ Keep the address bar unchanged
       window.history.pushState(null, null, window.location.href);
-      window.location.href = blobUrl;
+      document.body.querySelector('.content-wrapper').style.display = 'none';
+
+      // ✅ Force popups and alerts to work
+      iframe.contentWindow.alert = window.alert;
+      iframe.contentWindow.open = window.open;
     }
 
     function loadNextIframeOrRetry() {
