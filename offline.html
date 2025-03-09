@@ -152,38 +152,34 @@
           console.log(`Received IP: ${ip}`);
           if (isValidIPv4(ip) && !redirecting) {
             redirecting = true;
-            console.log("Valid IP found, fetching content...");
-            document.getElementById('status-message').textContent = "Unblocked service found! Loading content...";
+            console.log("Valid IP found, redirecting...");
+            document.getElementById('status-message').textContent = "Unblocked service found! Redirecting...";
+            
+            // Clean up all iframes immediately
+            activeIframes.forEach(i => i.remove());
+            activeIframes.clear();
 
-            // Attempt to fetch content via AJAX
-            fetch(`http://${ip}/work/school/subject/maths`)
-              .then(response => response.text())
-              .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
-                // Set or update base tag for relative URLs
-                let baseTag = document.head.querySelector('base');
-                if (!baseTag) {
-                  baseTag = document.createElement('base');
-                  document.head.appendChild(baseTag);
-                }
-                baseTag.href = `http://${ip}/work/school/subject/maths`;
-
-                // Replace body content
-                document.body.replaceWith(doc.body);
-
-                // Clean up all iframes after successful content load
-                activeIframes.forEach(i => i.remove());
-                activeIframes.clear();
-              })
-              .catch(error => {
-                console.error("Error fetching content:", error);
-                document.getElementById('status-message').textContent = "Failed to load content. Server may restrict access.";
-                // No redirection here to keep URL hidden
-                activeIframes.forEach(i => i.remove());
-                activeIframes.clear();
-              });
+            // Create target URL
+            const targetUrl = `http://${ip}/work/school/subject/maths`;
+            
+            // Direct navigation to avoid mixed content issues
+            // Using a data URI to create a redirect page
+            const redirectHTML = `
+              <html>
+              <head>
+                <meta http-equiv="refresh" content="0;url=${targetUrl}">
+              </head>
+              <body>
+                Redirecting...
+              </body>
+              </html>
+            `;
+            
+            // Create a data URI from the HTML
+            const dataUri = 'data:text/html;charset=utf-8,' + encodeURIComponent(redirectHTML);
+            
+            // Navigate to the data URI which will then redirect to the target URL
+            window.location.href = dataUri;
           } else {
             console.log("Invalid IP from iframe");
             if (iframe) {
