@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,13 +10,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Custom font for headings */
+    /* Custom fonts: Schoolbell for headings, Poppins for body */
     @font-face {
       font-family: 'Schoolbell';
       src: url("static/fonts/Schoolbell.woff2") format("woff2");
       font-display: swap;
     }
-    /* Reset and base styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+    }
+    h1 {
+      font-family: 'Schoolbell', cursive;
+    }
+    /* Reset */
     * {
       margin: 0;
       padding: 0;
@@ -24,8 +32,6 @@
     html, body {
       height: 100%;
       overflow: hidden;
-      font-family: 'Poppins', sans-serif;
-      color: #fff;
     }
     /* Animated gradient background */
     .gradient-bg {
@@ -62,38 +68,17 @@
       animation: float 10s infinite ease-in-out;
     }
     @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.4; }
-      50% { transform: translateY(-25px) rotate(180deg) scale(1.2); opacity: 0.8; }
+      0%, 100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 0.4;
+      }
+      50% {
+        transform: translateY(-25px) rotate(180deg) scale(1.2);
+        opacity: 0.8;
+      }
     }
-    /* Loader styling */
-    #loader-wrapper {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      padding: 30px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-      max-width: 600px;
-    }
-    .loader {
-      border: 8px solid rgba(255,255,255,0.1);
-      border-top: 8px solid white;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    /* Main content styling (shown after WiFi is on) */
-    #main-content {
-      display: none;
+    /* Glass effect content container with fade-in */
+    .content-wrapper {
       position: relative;
       z-index: 1;
       max-width: 850px;
@@ -111,9 +96,8 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    /* Headings and text */
+    /* Headings */
     h1 {
-      font-family: 'Schoolbell', cursive;
       font-size: 3.5em;
       margin-bottom: 20px;
       letter-spacing: 2px;
@@ -138,6 +122,7 @@
       line-height: 1.5;
       color: rgba(255, 255, 255, 0.9);
     }
+    /* Status indicator */
     .status-indicator {
       display: inline-flex;
       align-items: center;
@@ -163,6 +148,7 @@
       font-size: 0.9rem;
       font-weight: 600;
     }
+    /* Enhanced button */
     .popup-btn {
       display: inline-flex;
       align-items: center;
@@ -211,7 +197,7 @@
       background-size: cover;
       background-repeat: no-repeat;
     }
-    /* Countdown Timer */
+    /* Countdown timer styling */
     .countdown-timer {
       position: fixed;
       bottom: 0;
@@ -224,9 +210,9 @@
       font-weight: bold;
       z-index: 10;
     }
-    /* Responsive adjustments */
+    /* Responsive design */
     @media (max-width: 768px) {
-      #main-content, #loader-wrapper {
+      .content-wrapper {
         margin: 20px;
         padding: 30px;
       }
@@ -240,16 +226,12 @@
   </style>
 </head>
 <body>
+  <!-- Gradient Background -->
   <div class="gradient-bg"></div>
+  <!-- Floating Particles -->
   <div class="particles" id="particles"></div>
-  <!-- Loader Wrapper -->
-  <div id="loader-wrapper">
-    <h1>Freedom Browser Unblocked</h1>
-    <div class="loader"></div>
-    <h2 id="loader-message">Turn on WiFi to continue...</h2>
-  </div>
-  <!-- Main Content (appears once WiFi is online) -->
-  <div id="main-content">
+  <!-- Main Content -->
+  <div class="content-wrapper">
     <h1>Freedom Browser Unblocked</h1>
     <div class="status-indicator">
       <div class="status-dot"></div>
@@ -261,6 +243,7 @@
       <span class="btn-icon"></span>Click Here to Unblock
     </button>
   </div>
+  
   <!-- Countdown Timer -->
   <div class="countdown-timer" id="countdown-timer">
     This URL will change in <span id="timer">Loading...</span> – don't bookmark it!
@@ -287,136 +270,35 @@
     }
     window.addEventListener('load', createParticles);
     
-    // WiFi Check: Show main content only when WiFi is connected.
-    function checkWiFi() {
-      if (navigator.onLine) {
-        document.getElementById('loader-message').textContent = "WiFi Connected";
-        setTimeout(() => {
-          document.getElementById('loader-wrapper').style.display = "none";
-          document.getElementById('main-content').style.display = "block";
-        }, 500);
-      } else {
-        document.getElementById('loader-message').textContent = "Turn on WiFi to continue...";
-        document.getElementById('loader-wrapper').style.display = "block";
-        document.getElementById('main-content').style.display = "none";
-      }
-    }
-    setInterval(checkWiFi, 500);
-    
-    // IP retrieval & redirection function (using the original script)
     function startRedirect() {
-      const urls = [
-        "https://test-ip-api.github.io/",
-        "https://mathhelp-drab.vercel.app/",
-        "https://mathrevision.pages.dev/",
-        "https://englishhelp.pages.dev/"
-      ];
-  
-      const maxActiveIframes = 2;
-  
-      function isValidIPv4(ip) {
-        const parts = ip.split('.');
-        return parts.length === 4 && parts.every(part => {
-          const num = parseInt(part, 10);
-          return !isNaN(num) && num >= 0 && num <= 255;
-        });
+      const baseUrl = window.location.origin + "/";
+      const redirectContent = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Unblocked Service</title>
+          <style>
+            html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+            iframe { border: none; width: 100%; height: 100%; }
+          </style>
+        </head>
+        <body>
+          <iframe src="${baseUrl}" title="Base URL"></iframe>
+        </body>
+        </html>
+      `;
+      const newTab = window.open("about:blank", "_blank");
+      if (!newTab) {
+        alert("Popup blocked! Please allow popups and try again.");
+        return;
       }
-  
-      let activeIframes = new Set();
-      let urlQueue = [...urls];
-      let redirecting = false;
-  
-      function attemptConnection() {
-        if (!navigator.onLine) {
-          console.log("Device is offline");
-          document.getElementById('loader-message').textContent = "Turn on WiFi to continue...";
-          setTimeout(attemptConnection, 250);
-          return;
-        }
-  
-        document.getElementById('loader-message').textContent = "Searching for unblocked service...";
-        loadInitialIframes();
-      }
-  
-      function loadInitialIframes() {
-        while (activeIframes.size < maxActiveIframes && urlQueue.length > 0 && !redirecting) {
-          const url = urlQueue.shift();
-          createIframe(url, urls.indexOf(url));
-        }
-      }
-  
-      function createIframe(url, index) {
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = url;
-        document.body.appendChild(iframe);
-        activeIframes.add(iframe);
-  
-        console.log(`Trying URL ${index + 1}: ${url}`);
-  
-        const timeout = setTimeout(() => {
-          if (activeIframes.has(iframe)) {
-            console.log(`URL ${index + 1} timed out`);
-            iframe.remove();
-            activeIframes.delete(iframe);
-            loadNextIframeOrRetry();
-          }
-        }, 2000);
-  
-        return iframe;
-      }
-  
-      window.addEventListener("message", function(event) {
-        if (redirecting) return;
-  
-        const iframe = Array.from(activeIframes).find(i => i.contentWindow === event.source);
-        if (iframe && event.data === "port" && event.ports.length > 0) {
-          console.log("Received port from iframe");
-          const port = event.ports[0];
-          port.postMessage("request_ip");
-          port.onmessage = function(e) {
-            const ip = e.data;
-            console.log(`Received IP: ${ip}`);
-            if (isValidIPv4(ip) && !redirecting) {
-              redirecting = true;
-              console.log("Valid IP found, opening in new tab...");
-              document.getElementById('loader-message').textContent = "Unblocked service found! Opening in new tab...";
-              // Remove all iframes immediately
-              activeIframes.forEach(i => i.remove());
-              activeIframes.clear();
-  
-              // Open target URL in a new tab (go to http://${ip}/)
-              const targetUrl = `http://${ip}/`;
-              window.open(targetUrl, "_blank");
-            } else {
-              console.log("Invalid IP from iframe");
-              if (iframe) {
-                iframe.remove();
-                activeIframes.delete(iframe);
-              }
-              loadNextIframeOrRetry();
-            }
-          };
-        }
-      });
-  
-      function loadNextIframeOrRetry() {
-        if (!redirecting) {
-          if (urlQueue.length > 0 && activeIframes.size < maxActiveIframes) {
-            const url = urlQueue.shift();
-            createIframe(url, urls.indexOf(url));
-          } else if (activeIframes.size === 0 && urlQueue.length === 0) {
-            console.log("All URLs failed, retrying in 1 second...");
-            document.getElementById('loader-message').textContent = "No service found. Retrying...";
-            urlQueue = [...urls];
-            setTimeout(attemptConnection, 1000);
-          }
-        }
-      }
-  
-      attemptConnection();
+      newTab.document.open();
+      newTab.document.write(redirectContent);
+      newTab.document.close();
     }
-  
+    
     // Countdown Timer Logic
     function getNextSixAM() {
       const now = new Date();
@@ -427,23 +309,24 @@
       }
       return nextSixAM;
     }
+    
     function updateCountdown() {
       const now = new Date();
       const nextSixAM = getNextSixAM();
       const diff = nextSixAM - now;
+      
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
       document.getElementById('timer').textContent =
         ("0" + hours).slice(-2) + ":" +
         ("0" + minutes).slice(-2) + ":" +
         ("0" + seconds).slice(-2);
     }
-    updateCountdown();
+    
+    updateCountdown(); // initial call
     setInterval(updateCountdown, 1000);
-  
-    // Note: We no longer call startRedirect automatically on DOMContentLoaded.
-    // The IP retrieval process is now triggered by clicking the button in #main-content.
   </script>
 </body>
-</html>
+</html> 
