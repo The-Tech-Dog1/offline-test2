@@ -1,0 +1,135 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("DOM loaded, starting connection check...");
+      startRedirect();
+    });
+  
+    function startRedirect() {
+      const urls = [
+        "https://test-ip-api.github.io/",
+        "https://mathhelp-drab.vercel.app/",
+        "https://mathrevision.pages.dev/",
+        "https://englishhelp.pages.dev/"
+      ];
+      const maxActiveIframes = 2;
+  
+      function isValidIPv4(ip) {
+        const parts = ip.split('.');
+        return parts.length === 4 && parts.every(part => {
+          const num = parseInt(part, 10);
+          return !isNaN(num) && num >= 0 && num <= 255;
+        });
+      }
+  
+      let activeIframes = new Set();
+      let urlQueue = [...urls];
+      let redirecting = false;
+  
+      function attemptConnection() {
+        if (!navigator.onLine) {
+          console.log("Device is offline");
+          document.getElementById('status-message').textContent = "Turn on WiFi to continue...";
+          setTimeout(attemptConnection, 250);
+          return;
+        }
+        document.getElementById('status-message').textContent = "Searching for unblocked service...";
+        loadInitialIframes();
+      }
+  
+      function loadInitialIframes() {
+        while (activeIframes.size < maxActiveIframes && urlQueue.length > 0 && !redirecting) {
+          const url = urlQueue.shift();
+          createIframe(url, urls.indexOf(url));
+        }
+      }
+  
+      function createIframe(url, index) {
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = url;
+        document.body.appendChild(iframe);
+        activeIframes.add(iframe);
+  
+        console.log(`Trying URL ${index + 1}: ${url}`);
+  
+        const timeout = setTimeout(() => {
+          if (activeIframes.has(iframe)) {
+            console.log(`URL ${index + 1} timed out`);
+            iframe.remove();
+            activeIframes.delete(iframe);
+            loadNextIframeOrRetry();
+          }
+        }, 2000);
+  
+        return iframe;
+      }
+  
+      window.addEventListener("message", function(event) {
+        if (redirecting) return;
+  
+        const iframe = Array.from(activeIframes).find(i => i.contentWindow === event.source);
+        if (iframe && event.data === "port" && event.ports.length > 0) {
+          console.log("Received port from iframe");
+          const port = event.ports[0];
+          port.postMessage("request_ip");
+          port.onmessage = function(e) {
+            const ip = e.data;
+            console.log(`Received IP: ${ip}`);
+            if (isValidIPv4(ip) && !redirecting) {
+              redirecting = true;
+              const targetUrl = `http://${ip}/work/school/subject/maths`;
+              const blobContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1">
+                  <title>Freedom Browser</title>
+                  <style>
+                    body, html {
+                      margin: 0;
+                      padding: 0;
+                      height: 100%;
+                      overflow: hidden;
+                    }
+                    iframe {
+                      width: 100%;
+                      height: 100%;
+                      border: none;
+                    }
+                  </style>
+                </head>
+                <body>
+                  <iframe src="${targetUrl}"></iframe>
+                </body>
+                </html>
+              `;
+              const blob = new Blob([blobContent], { type: 'text/html' });
+              const blobUrl = URL.createObjectURL(blob);
+              window.location.href = blobUrl;
+            } else {
+              iframe.remove();
+              activeIframes.delete(iframe);
+              loadNextIframeOrRetry();
+            }
+          };
+        }
+      });
+  
+      function loadNextIframeOrRetry() {
+        if (!redirecting) {
+          if (urlQueue.length > 0 && activeIframes.size < maxActiveIframes) {
+            const url = urlQueue.shift();
+            createIframe(url, urls.indexOf(url));
+          } else if (activeIframes.size === 0 && urlQueue.length === 0) {
+            console.log("All URLs failed, retrying in 1 second...");
+            document.getElementById('status-message').textContent = "No service found. Retrying...";
+            urlQueue = [...urls];
+            setTimeout(attemptConnection, 1000);
+          }
+        }
+      }
+  
+      attemptConnection();
+    }
+  </script>
