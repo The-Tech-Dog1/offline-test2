@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Freedom Browser Unblocked</title>
-  <!-- Google Fonts for body text -->
+  <!-- Resource hints for faster loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /* Custom font for headings */
     @font-face {
@@ -27,24 +27,34 @@
       font-family: 'Poppins', sans-serif;
       color: #fff;
     }
-    /* Animated gradient background */
+    /* Improved animated gradient background */
     .gradient-bg {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(-45deg, #0575E6, #8E54E9, #4776E6, #8E2DE2);
+      background: linear-gradient(-45deg, #3a47d5, #00d2ff, #3a47d5, #0cbaba);
       background-size: 400% 400%;
       animation: gradient 20s ease infinite;
       z-index: -2;
+    }
+    /* Subtle texture overlay */
+    .texture-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23ffffff' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+      z-index: -1;
     }
     @keyframes gradient {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    /* Floating particles */
+    /* Enhanced floating particles */
     .particles {
       position: absolute;
       top: 0;
@@ -60,23 +70,27 @@
       background: rgba(255,255,255,0.3);
       filter: blur(1px);
       animation: float 10s infinite ease-in-out;
+      will-change: transform, opacity;
     }
     @keyframes float {
       0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.4; }
       50% { transform: translateY(-25px) rotate(180deg) scale(1.2); opacity: 0.8; }
     }
-    /* Loader styling */
+    /* Improved loader styling */
     #loader-wrapper {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      padding: 30px;
+      padding: 40px;
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
+      border-radius: 20px;
       backdrop-filter: blur(10px);
       max-width: 600px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
     }
     .loader {
       border: 8px solid rgba(255,255,255,0.1);
@@ -85,189 +99,268 @@
       width: 60px;
       height: 60px;
       animation: spin 1s linear infinite;
-      margin: 20px auto;
+      margin: 25px auto;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    /* Main content styling (shown after WiFi is on) */
+    /* Enhanced main content styling */
     #main-content {
       display: none;
       position: relative;
       z-index: 1;
       max-width: 850px;
       margin: 50px auto;
-      padding: 50px;
+      padding: 60px;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
       border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.15);
       box-shadow: 0 15px 35px rgba(0,0,0,0.2);
       text-align: center;
       animation: fadeIn 1s ease-out forwards;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    #main-content:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    /* Headings and text */
+    /* Improved headings and text */
     h1 {
-      font-family: 'Schoolbell', cursive;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
       font-size: 3.5em;
-      margin-bottom: 20px;
-      letter-spacing: 2px;
-      text-shadow: 0 3px 15px rgba(0,0,0,0.4);
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.2);
       position: relative;
       display: inline-block;
+      background: linear-gradient(45deg, #ffffff, #e0e0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     h1::after {
       content: '';
       position: absolute;
       bottom: -10px;
-      left: 0;
-      width: 100%;
+      left: 10%;
+      width: 80%;
       height: 4px;
-      background: linear-gradient(90deg, transparent, #fff, transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
       border-radius: 2px;
     }
     h2 {
       font-size: 1.3em;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       font-weight: 400;
-      line-height: 1.5;
-      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.95);
     }
+    /* Improved status indicator */
     .status-indicator {
       display: inline-flex;
       align-items: center;
-      background: rgba(0,0,0,0.25);
-      padding: 8px 16px;
+      background: rgba(0,0,0,0.2);
+      padding: 10px 20px;
       border-radius: 50px;
-      margin-bottom: 30px;
+      margin-bottom: 35px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       background-color: #4ade80;
       border-radius: 50%;
-      margin-right: 10px;
-      animation: pulse 2s infinite;
+      margin-right: 12px;
+      animation: pulseBetter 2s infinite;
     }
-    @keyframes pulse {
+    @keyframes pulseBetter {
       0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74,222,128,0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(74,222,128,0); }
+      70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(74,222,128,0); }
       100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74,222,128,0); }
     }
     .status-text {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 600;
+      letter-spacing: 0.5px;
     }
+    /* Enhanced button */
     .popup-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       padding: 16px 40px;
       font-size: 1.2rem;
-      font-weight: 700;
+      font-weight: 600;
       letter-spacing: 1px;
       color: #fff;
-      background: linear-gradient(45deg, #FF512F, #DD2476);
+      background: linear-gradient(45deg, #4776E6, #8E54E9);
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(221,36,118,0.4);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 10px 20px rgba(78, 84, 200, 0.4);
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-      margin-top: 20px;
+      margin-top: 30px;
     }
     .popup-btn:before {
       content: '';
       position: absolute;
       top: 0;
-      left: 0;
-      width: 0%;
+      left: -100%;
+      width: 100%;
       height: 100%;
-      background: linear-gradient(45deg, #DD2476, #FF512F);
-      transition: width 0.5s;
-      z-index: -1;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.7s ease;
     }
     .popup-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 15px 30px rgba(221,36,118,0.6);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(78, 84, 200, 0.6);
     }
     .popup-btn:hover:before {
-      width: 100%;
+      left: 100%;
     }
     .popup-btn:active {
-      transform: scale(1);
+      transform: translateY(-2px) scale(0.98);
+    }
+    .popup-btn.loading {
+      pointer-events: none;
+      opacity: 0.9;
+    }
+    .popup-btn.loading .btn-text {
+      visibility: hidden;
+    }
+    .popup-btn.loading:after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
     }
     .btn-icon {
       width: 24px;
       height: 24px;
-      margin-right: 8px;
+      margin-right: 10px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.8 1.1 2.8 2.5V11c.6 0 1.2.6 1.2 1.3v3.5c0 .6-.6 1.2-1.3 1.2H9.2c-.6 0-1.2-.6-1.2-1.3v-3.5c0-.6.6-1.2 1.2-1.2V9.5C9.2 8.1 10.6 7 12 7zm0 1.2c-.8 0-1.5.5-1.5 1.3V11h3V9.5c0-.8-.7-1.3-1.5-1.3z'/%3E%3C/svg%3E");
       background-size: cover;
       background-repeat: no-repeat;
     }
-    /* Countdown Timer */
+    /* Improved Countdown Timer */
     .countdown-timer {
       position: fixed;
       bottom: 0;
       width: 100%;
       text-align: center;
-      padding: 10px 0;
-      background: rgba(0, 0, 0, 0.7);
-      color: red;
+      padding: 12px 0;
+      background: rgba(0, 0, 0, 0.75);
+      color: #ff4d4d;
       font-size: 1.1em;
       font-weight: bold;
       z-index: 10;
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    /* Toast notification system */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .toast {
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      transform: translateX(150%);
+      animation: slideIn 0.3s forwards, fadeOut 0.5s 2.5s forwards;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      max-width: 350px;
+    }
+    .toast.success { border-left: 4px solid #4ade80; }
+    .toast.error { border-left: 4px solid #ef4444; }
+    .toast.info { border-left: 4px solid #3b82f6; }
+    @keyframes slideIn {
+      to { transform: translateX(0); }
+    }
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
     }
     /* Responsive adjustments */
     @media (max-width: 768px) {
-      #main-content, #loader-wrapper {
+      #main-content {
         margin: 20px;
-        padding: 30px;
+        padding: 40px 25px;
       }
-      h1 { font-size: 2.8em; }
+      #loader-wrapper {
+        margin: 20px;
+        padding: 30px 20px;
+        max-width: calc(100% - 40px);
+      }
+      h1 { font-size: 2.5em; }
       h2 { font-size: 1.1em; }
       .popup-btn {
         padding: 14px 30px;
         font-size: 1rem;
       }
     }
+    @media (max-width: 480px) {
+      h1 { font-size: 2em; }
+      .loader { width: 50px; height: 50px; }
+    }
   </style>
 </head>
 <body>
   <div class="gradient-bg"></div>
+  <div class="texture-overlay"></div>
   <div class="particles" id="particles"></div>
+  
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+  
   <!-- Loader Wrapper -->
   <div id="loader-wrapper">
     <h1>Freedom Browser Unblocked</h1>
     <div class="loader"></div>
     <h2 id="loader-message">Turn on WiFi to continue...</h2>
   </div>
-  <!-- Main Content (appears once WiFi is online) -->
+  
+  <!-- Main Content -->
   <div id="main-content">
     <h1>Freedom Browser Unblocked</h1>
     <div class="status-indicator">
       <div class="status-dot"></div>
       <span class="status-text">Service Active</span>
     </div>
-    <h2>Please make sure your WiFi is turned on.</h2>
-    <h2>If the school blocks the new website it should be back up the next day, thanks to our specialised unblocking software.</h2>
-    <button class="popup-btn" onclick="startRedirect()">
-      <span class="btn-icon"></span>Click Here to Unblock
+    <h2>Make sure your WiFi is turned on to access unblocked content.</h2>
+    <h2>Our advanced system automatically updates daily - if a site is blocked, check back tomorrow!</h2>
+    <button id="unblock-button" class="popup-btn" onclick="startRedirect()">
+      <span class="btn-icon"></span>
+      <span class="btn-text">Click Here to Unblock</span>
     </button>
   </div>
+  
   <!-- Countdown Timer -->
   <div class="countdown-timer" id="countdown-timer">
     This URL will change in <span id="timer">Loading...</span> – don't bookmark it!
   </div>
   
   <script>
-    // Create floating particles
+    // Create enhanced floating particles
     function createParticles() {
       const particlesContainer = document.getElementById('particles');
       const particleCount = 30;
@@ -285,165 +378,286 @@
         particlesContainer.appendChild(particle);
       }
     }
-    window.addEventListener('load', createParticles);
     
-    // WiFi Check: Show main content only when WiFi is connected.
-    function checkWiFi() {
-      if (navigator.onLine) {
-        document.getElementById('loader-message').textContent = "WiFi Connected";
+    // Toast notification system
+    const toastSystem = {
+      container: document.getElementById('toast-container'),
+      
+      show(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        this.container.appendChild(toast);
+        
+        // Auto-remove toast after animation
         setTimeout(() => {
-          document.getElementById('loader-wrapper').style.display = "none";
-          document.getElementById('main-content').style.display = "block";
-        }, 500);
+          toast.remove();
+        }, 3000);
+      }
+    };
+    
+    // WiFi Check with improved user feedback
+    function checkWiFi() {
+      const loaderMessage = document.getElementById('loader-message');
+      const loaderWrapper = document.getElementById('loader-wrapper');
+      const mainContent = document.getElementById('main-content');
+      
+      if (navigator.onLine) {
+        loaderMessage.textContent = "WiFi Connected";
+        
+        // Only trigger transition once
+        if (loaderWrapper.style.display !== "none") {
+          setTimeout(() => {
+            loaderWrapper.style.display = "none";
+            mainContent.style.display = "block";
+            toastSystem.show('Connected to network', 'success');
+          }, 500);
+        }
       } else {
-        document.getElementById('loader-message').textContent = "Turn on WiFi to continue...";
-        document.getElementById('loader-wrapper').style.display = "block";
-        document.getElementById('main-content').style.display = "none";
+        loaderMessage.textContent = "Turn on WiFi to continue...";
+        loaderWrapper.style.display = "block";
+        mainContent.style.display = "none";
+        
+        // Show offline toast only once
+        if (window.wasOnline) {
+          toastSystem.show('Network connection lost', 'error');
+          window.wasOnline = false;
+        }
+      }
+      
+      // Track online status
+      if (navigator.onLine) {
+        window.wasOnline = true;
       }
     }
-    setInterval(checkWiFi, 500);
     
-    // IP retrieval & redirection function (using the original script)
+    // Improved redirection system
     function startRedirect() {
+      // Visual button feedback
+      const button = document.getElementById('unblock-button');
+      button.classList.add('loading');
+      
+      // Define endpoint URLs
       const urls = [
         "https://test-ip-api.github.io/",
         "https://mathhelp-drab.vercel.app/",
         "https://mathrevision.pages.dev/",
         "https://englishhelp.pages.dev/"
       ];
-  
-      const maxActiveIframes = 2;
-  
+      
+      const connectionOptions = {
+        maxConcurrentAttempts: 2,
+        connectionTimeout: 3000,
+        retryDelay: 1500,
+        maxRetries: 3
+      };
+      
+      // Better IP validation with regex
       function isValidIPv4(ip) {
-        const parts = ip.split('.');
-        return parts.length === 4 && parts.every(part => {
-          const num = parseInt(part, 10);
-          return !isNaN(num) && num >= 0 && num <= 255;
-        });
+        const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        return ipv4Regex.test(ip);
       }
-  
-      let activeIframes = new Set();
-      let urlQueue = [...urls];
-      let redirecting = false;
-  
-      function attemptConnection() {
-        if (!navigator.onLine) {
-          console.log("Device is offline");
-          document.getElementById('loader-message').textContent = "Turn on WiFi to continue...";
-          setTimeout(attemptConnection, 250);
-          return;
-        }
-  
-        document.getElementById('loader-message').textContent = "Searching for unblocked service...";
-        loadInitialIframes();
-      }
-  
-      function loadInitialIframes() {
-        while (activeIframes.size < maxActiveIframes && urlQueue.length > 0 && !redirecting) {
-          const url = urlQueue.shift();
-          createIframe(url, urls.indexOf(url));
-        }
-      }
-  
-      function createIframe(url, index) {
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = url;
-        document.body.appendChild(iframe);
-        activeIframes.add(iframe);
-  
-        console.log(`Trying URL ${index + 1}: ${url}`);
-  
-        const timeout = setTimeout(() => {
-          if (activeIframes.has(iframe)) {
-            console.log(`URL ${index + 1} timed out`);
-            iframe.remove();
-            activeIframes.delete(iframe);
-            loadNextIframeOrRetry();
+      
+      const connectionManager = {
+        activeConnections: new Set(),
+        urlQueue: [...urls],
+        redirecting: false,
+        retryCount: 0,
+        loadingIndicator: document.getElementById('loader-message'),
+        
+        showStatus(message) {
+          this.loadingIndicator.textContent = message;
+          // Also show as toast for better visibility
+          toastSystem.show(message, 'info');
+        },
+        
+        async attemptConnection() {
+          if (!navigator.onLine) {
+            this.showStatus("Turn on WiFi to continue...");
+            button.classList.remove('loading');
+            toastSystem.show("You're offline. Please connect to WiFi", 'error');
+            return;
           }
-        }, 2000);
-  
-        return iframe;
-      }
-  
+          
+          if (this.retryCount >= connectionOptions.maxRetries) {
+            this.showStatus("Connection attempts exhausted. Try again later.");
+            button.classList.remove('loading');
+            toastSystem.show("Couldn't find an unblocked service. Please try again later.", 'error');
+            return;
+          }
+          
+          this.showStatus(`Searching for unblocked service... (Attempt ${this.retryCount + 1}/${connectionOptions.maxRetries})`);
+          this.initiateConnections();
+        },
+        
+        initiateConnections() {
+          while (this.activeConnections.size < connectionOptions.maxConcurrentAttempts && 
+                 this.urlQueue.length > 0 && 
+                 !this.redirecting) {
+            const url = this.urlQueue.shift();
+            this.createConnection(url, urls.indexOf(url));
+          }
+        },
+        
+        createConnection(url, index) {
+          console.log(`Attempting connection to ${url}`);
+          
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.src = url;
+          document.body.appendChild(iframe);
+          this.activeConnections.add(iframe);
+          
+          // Set connection timeout
+          const timeoutId = setTimeout(() => {
+            if (this.activeConnections.has(iframe)) {
+              console.log(`Connection to ${url} timed out`);
+              this.cleanupConnection(iframe);
+            }
+          }, connectionOptions.connectionTimeout);
+          
+          // Store timeout ID with the iframe
+          iframe.timeoutId = timeoutId;
+          
+          return iframe;
+        },
+        
+        cleanupConnection(iframe) {
+          clearTimeout(iframe.timeoutId);
+          iframe.remove();
+          this.activeConnections.delete(iframe);
+          this.checkConnectionStatus();
+        },
+        
+        checkConnectionStatus() {
+          if (!this.redirecting) {
+            if (this.urlQueue.length > 0 && this.activeConnections.size < connectionOptions.maxConcurrentAttempts) {
+              const url = this.urlQueue.shift();
+              this.createConnection(url, urls.indexOf(url));
+            } else if (this.activeConnections.size === 0 && this.urlQueue.length === 0) {
+              this.handleAllConnectionsFailed();
+            }
+          }
+        },
+        
+        handleAllConnectionsFailed() {
+          this.retryCount++;
+          console.log(`All connections failed, retry ${this.retryCount}/${connectionOptions.maxRetries}`);
+          
+          if (this.retryCount >= connectionOptions.maxRetries) {
+            this.showStatus("No service found. Please try again later.");
+            button.classList.remove('loading');
+            return;
+          }
+          
+          this.showStatus(`No service found. Retrying (${this.retryCount}/${connectionOptions.maxRetries})...`);
+          this.urlQueue = [...urls];
+          setTimeout(() => this.attemptConnection(), connectionOptions.retryDelay);
+        },
+        
+        handleSuccessfulConnection(ip) {
+          if (!this.redirecting && isValidIPv4(ip)) {
+            this.redirecting = true;
+            this.showStatus("Unblocked service found! Opening...");
+            toastSystem.show("Success! Opening unblocked browser...", 'success');
+            
+            // Clean up all connections
+            this.activeConnections.forEach(conn => {
+              clearTimeout(conn.timeoutId);
+              conn.remove();
+            });
+            this.activeConnections.clear();
+            
+            // Open in new tab with slight delay for visual feedback
+            setTimeout(() => {
+              const targetUrl = `http://${ip}/`;
+              window.open(targetUrl, "_blank");
+              button.classList.remove('loading');
+            }, 1000);
+            
+            return true;
+          }
+          return false;
+        }
+      };
+      
+      // Message handler for iframe communication
       window.addEventListener("message", function(event) {
-        if (redirecting) return;
-  
-        const iframe = Array.from(activeIframes).find(i => i.contentWindow === event.source);
+        if (connectionManager.redirecting) return;
+        
+        const iframe = Array.from(connectionManager.activeConnections)
+          .find(i => i.contentWindow === event.source);
+          
         if (iframe && event.data === "port" && event.ports.length > 0) {
-          console.log("Received port from iframe");
+          console.log("Received communication port");
           const port = event.ports[0];
+          
           port.postMessage("request_ip");
           port.onmessage = function(e) {
             const ip = e.data;
             console.log(`Received IP: ${ip}`);
-            if (isValidIPv4(ip) && !redirecting) {
-              redirecting = true;
-              console.log("Valid IP found, opening in new tab...");
-              document.getElementById('loader-message').textContent = "Unblocked service found! Opening in new tab...";
-              // Remove all iframes immediately
-              activeIframes.forEach(i => i.remove());
-              activeIframes.clear();
-  
-              // Open target URL in a new tab (go to http://${ip}/)
-              const targetUrl = `http://${ip}/`;
-              window.open(targetUrl, "_blank");
-            } else {
-              console.log("Invalid IP from iframe");
-              if (iframe) {
-                iframe.remove();
-                activeIframes.delete(iframe);
-              }
-              loadNextIframeOrRetry();
+            
+            if (!connectionManager.handleSuccessfulConnection(ip)) {
+              connectionManager.cleanupConnection(iframe);
             }
           };
         }
       });
-  
-      function loadNextIframeOrRetry() {
-        if (!redirecting) {
-          if (urlQueue.length > 0 && activeIframes.size < maxActiveIframes) {
-            const url = urlQueue.shift();
-            createIframe(url, urls.indexOf(url));
-          } else if (activeIframes.size === 0 && urlQueue.length === 0) {
-            console.log("All URLs failed, retrying in 1 second...");
-            document.getElementById('loader-message').textContent = "No service found. Retrying...";
-            urlQueue = [...urls];
-            setTimeout(attemptConnection, 1000);
-          }
+      
+      // Start the connection process
+      connectionManager.attemptConnection();
+    }
+    
+    // Improved countdown timer
+    const countdownTimer = {
+      timerElement: document.getElementById('timer'),
+      
+      init() {
+        this.update();
+        setInterval(() => this.update(), 1000);
+      },
+      
+      getNextResetTime() {
+        const now = new Date();
+        const nextReset = new Date(now);
+        nextReset.setHours(6, 0, 0, 0);
+        if (now >= nextReset) {
+          nextReset.setDate(nextReset.getDate() + 1);
         }
+        return nextReset;
+      },
+      
+      formatTime(value) {
+        return value.toString().padStart(2, '0');
+      },
+      
+      update() {
+        const now = new Date();
+        const nextReset = this.getNextResetTime();
+        const diff = nextReset - now;
+        
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        this.timerElement.textContent = 
+          `${this.formatTime(hours)}:${this.formatTime(minutes)}:${this.formatTime(seconds)}`;
       }
-  
-      attemptConnection();
-    }
-  
-    // Countdown Timer Logic
-    function getNextSixAM() {
-      const now = new Date();
-      const nextSixAM = new Date(now);
-      nextSixAM.setHours(6, 0, 0, 0);
-      if (now >= nextSixAM) {
-        nextSixAM.setDate(nextSixAM.getDate() + 1);
-      }
-      return nextSixAM;
-    }
-    function updateCountdown() {
-      const now = new Date();
-      const nextSixAM = getNextSixAM();
-      const diff = nextSixAM - now;
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      document.getElementById('timer').textContent =
-        ("0" + hours).slice(-2) + ":" +
-        ("0" + minutes).slice(-2) + ":" +
-        ("0" + seconds).slice(-2);
-    }
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-  
-    // Note: We no longer call startRedirect automatically on DOMContentLoaded.
-    // The IP retrieval process is now triggered by clicking the button in #main-content.
+    };
+    
+    // Initialize application
+    window.addEventListener('load', () => {
+      // Create visual elements
+      createParticles();
+      
+      // Initialize WiFi checking
+      window.wasOnline = navigator.onLine;
+      checkWiFi();
+      setInterval(checkWiFi, 1000);
+      
+      // Initialize countdown timer
+      countdownTimer.init();
+    });
   </script>
 </body>
 </html>
