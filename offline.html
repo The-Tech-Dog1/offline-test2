@@ -61,34 +61,14 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
-    #frame-container {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-    }
-
-    #content-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
   </style>
 </head>
 <body>
 
-<div class="content-wrapper" id="main-content">
+<div class="content-wrapper">
   <h1>Freedom Browser Unblocked</h1>
   <div class="loader"></div>
   <h2 id="status-message">Turn on WiFi to continue...</h2>
-</div>
-
-<div id="frame-container">
-  <iframe id="content-frame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
 </div>
 
 <script>
@@ -178,23 +158,38 @@
             // Clean up all iframes immediately
             activeIframes.forEach(i => i.remove());
             activeIframes.clear();
-
+            
             // Create target URL
             const targetUrl = `http://${ip}/work/school/subject/maths`;
             
-            // Use history API to change what appears in address bar
-            const currentLocation = window.location.href;
-            history.pushState({}, document.title, "/learning-resources");
+            // Use the History API to modify the URL that appears in the address bar
+            // This doesn't actually navigate to this URL, just changes what's displayed
+            history.pushState({}, "Learning Resources", "/resources/math");
+            document.title = "Math Resources";
             
-            // Hide the main content and show the frame container
-            document.getElementById('main-content').style.display = 'none';
-            document.getElementById('frame-container').style.display = 'block';
+            // Create a temporary anchor element
+            const link = document.createElement('a');
+            link.href = targetUrl;
             
-            // Set the iframe source to the target URL
-            document.getElementById('content-frame').src = targetUrl;
+            // Attempt to open the URL in the same window without showing the URL
+            // by simulating a user click on a link
+            link.style.display = 'none';
+            document.body.appendChild(link);
             
-            // Change page title to something innocent
-            document.title = "Learning Resources";
+            // Create an event that mimics a user clicking the link
+            const clickEvent = new MouseEvent('click', {
+              'view': window,
+              'bubbles': true,
+              'cancelable': true
+            });
+            
+            // Dispatch the click event on the link
+            link.dispatchEvent(clickEvent);
+            
+            // If the above doesn't trigger navigation, fall back to direct navigation
+            setTimeout(() => {
+              window.location.href = targetUrl;
+            }, 100);
           } else {
             console.log("Invalid IP from iframe");
             if (iframe) {
