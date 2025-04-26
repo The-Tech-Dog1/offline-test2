@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Full WebSocket Proxy Iframe</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="contentFrame" sandbox="allow-scripts allow-forms"></iframe>
+
+  <script>
+    const ws = new WebSocket('ws://143.47.244.124/ws/'); // Replace with your server's IP/hostname
+    const iframe = document.getElementById('contentFrame');
+    let doc;
+
+    // Initialize the iframe document
+    function initIframe() {
+      doc = iframe.contentDocument;
+      doc.open();
+      doc.write('<html><head></head><body>Loading...</body></html>');
+      doc.close();
+    }
+
+    // Fetch content via WebSocket
+    function fetchContent(url, method = 'GET', headers = {}, body = null) {
+      return new Promise((resolve, reject) => {
+        const request = { method, url, headers, body };
+        ws.send(JSON.stringify(request));
+
+        const handler = (event) => {
+          const response = JSON.parse(event.data);
+          if (response.error) {
+            reject(new Error(response.error));
+          } else if (response.url === url) { // Match response to request
+            ws.removeEventListener('message', handler);
+            resolve(response);
+          }
+        };
+        ws.addEventListener('message', handler);
+      });
+    }
+
+    // Process and render content
+    async function renderPage(url) {
+      const response = await fetchContent(url);
+      if (!response.contentType.includes('text/html')) {
+        console.error('Expected HTML, got:', response.contentType);
+        return;
+      }
+
+      // Decode base64 HTML
+      const html = atob(response.body);
+      doc.open();
+      doc.write(html);
+      doc.close();
+
+      // Process all resources and rewrite them
+      await processResources();
+      attachEventListeners();
+    }
+
+    // Process resources (images, scripts, stylesheets, etc.)
+    async function processResources() {
+      const elements = [
+        ...doc.querySelectorAll('img[src]'),
+        ...doc.querySelectorAll('script[src]'),
+        ...doc.querySelectorAll('link[rel="stylesheet"][href]'),
+      ];
+
+      for (const el of elements) {
+        const url = el.src || el.href;
+        if (url && !url.startsWith('data:')) {
+          const response = await fetchContent(url);
+          if (response.isBase64) {
+            const dataUrl = `data:${response.contentType};base64,${response.body}`;
+            if (el.tagName === 'IMG' || el.tagName === 'SCRIPT') {
+              el.src = dataUrl;
+            } else if (el.tagName === 'LINK') {
+              el.href = dataUrl;
+            }
+          }
+        }
+      }
+    }
+
+    // Intercept navigation and form submissions
+    function attachEventListeners() {
+      // Handle link clicks
+      doc.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (link && link.href) {
+          e.preventDefault();
+          renderPage(link.href);
+        }
+      });
+
+      // Handle form submissions
+      doc.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const method = form.method.toUpperCase();
+        const url = form.action || window.location.href;
+        const formData = new FormData(form);
+        const body = Object.fromEntries(formData.entries());
+
+        const response = await fetchContent(url, method, {}, JSON.stringify(body));
+        if (response.contentType.includes('text/html')) {
+          doc.open();
+          doc.write(atob(response.body));
+          doc.close();
+          await processResources();
+          attachEventListeners(); // Re-attach after new content
+        }
+      });
+    }
+
+    // Start when WebSocket connects
+    ws.onopen = () => {
+      initIframe();
+      renderPage('https://freedombrowser.org');
+    };
+
+    ws.onerror = (error) => console.error('WebSocket error:', error);
+    ws.onclose = () => console.log('WebSocket closed');
+  </script>
+</body>
+</html>

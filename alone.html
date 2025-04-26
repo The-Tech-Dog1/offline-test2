@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test Page</title>
+</head>
+<body>
+    <button onclick="openIframeWindow()">Open Iframe Window</button>
+
+    <script>
+        function openIframeWindow() {
+            // Open a new blank window
+            const newWindow = window.open('about:blank', '_blank');
+            
+            // Write HTML content to the new window
+            newWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Iframe Window</title>
+                    <style>
+                        body { margin: 0; }
+                        iframe { width: 100%; height: 100vh; border: none; }
+                    </style>
+                </head>
+                <body>
+                    <<iframe src="https://snowflake.torproject.org/embed.html" width="320" height="240" frameborder="0" scrolling="no"></iframe>
+                </body>
+                </html>
+            `);
+            
+            // Close the document to ensure it renders
+            newWindow.document.close();
+        }
+    </script>
+</body>
+</html>
